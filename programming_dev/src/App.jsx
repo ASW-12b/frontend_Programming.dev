@@ -17,17 +17,7 @@ function App() {
           })
   }
   return (
-    <>
     <Layout/>
-      <button onClick={getPosts}>Clica aqui</button>
-      <div>
-        {posts.map(p => (
-          <div key={p.pk}>
-            <p>{p.fields.title}</p>
-          </div>
-        ))}
-      </div>
-    </>
   )
 }
 
