@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import './App.css'
+import {Layout} from './components/Layout'
+
 
 
 function App() {
@@ -15,6 +17,7 @@ function App() {
   }
   return (
     <>
+    <Layout/>
       <button onClick={getPosts}>Clica aqui</button>
       <div>
         {posts.map(p => (
