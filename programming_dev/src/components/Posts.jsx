@@ -16,7 +16,6 @@ export function Posts() {
         return fetch('https://apiprogrammingdev.onrender.com/posts')
               .then(response => response.json())
               .then(data => {
-                console.log(data)
                 return data
               })
       }
