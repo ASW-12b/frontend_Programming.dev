@@ -13,7 +13,12 @@ import { Dropdown } from 'react-bootstrap';
 export function Posts() {
     const [posts, setPosts] = useState([])
       function getPosts() {
-        return fetch('https://apiprogrammingdev.onrender.com/posts')
+        return fetch('https://apiprogrammingdev.onrender.com/posts',
+        {method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+        },)
               .then(response => response.json())
               .then(data => {
                 return data
@@ -33,7 +38,7 @@ export function Posts() {
             {posts.map(p => {
                 return (
                     <div key={p.pk} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                            <a style={{color:'black',textDecoration:'none'}} href="#">
+                            <a style={{color:'black',textDecoration:'none'}} href={`/posts/${p.pk}`}>
                                 <h4><b>{p.fields.title}</b></h4>
                             </a>
                         <div className="row px-4">
