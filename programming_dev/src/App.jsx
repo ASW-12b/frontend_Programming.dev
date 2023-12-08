@@ -1,12 +1,11 @@
 import {CreatePost} from './components/CreatePost'
 import {Posts} from './components/Posts'
+import {Search} from './components/Search'
 import {Switch,Route} from 'react-router-dom'
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-
-
 
 
 function App() {
@@ -18,7 +17,7 @@ function App() {
                 <a href="#" className="nav-link"  style={{ marginRight: '10px' }}>Comunitats </a>
                 <a href="/createPost" className="nav-link" style={{ marginRight: '10px' }}>Crear Publicació</a>
                 <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
-                    <a href="#" className="nav-link" style={{ marginRight: '10px' }}>
+                    <a href="/search" className="nav-link" style={{ marginRight: '10px' }}>
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </a>
                     <div className="nav-item dropdown">
@@ -32,9 +31,10 @@ function App() {
             </nav>
         </div>
       <Switch>
-        <Route path="/createPost" component={CreatePost} />
-        <Route path="/posts" component={Posts} />
-        <Route path="/" component={Posts} />
+          <Route path="/createPost" component={CreatePost} />
+          <Route path="/posts" component={Posts} />
+          <Route path="/search" component={Search} />
+          <Route path="/" component={Posts} />
       </Switch>
     </>
   )

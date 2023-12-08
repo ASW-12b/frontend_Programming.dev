@@ -1,0 +1,69 @@
+/* In your CSS file (styles.css) */
+.custom-margin {
+  margin-left: 200px;
+  margin-right: 200px;
+}
+
+h1 {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.custom-dropdown-button {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid black !important; /* Add border to prevent default Bootstrap styles */
+}
+
+.custom-dropdown-button:hover,
+.custom-dropdown-button:active,
+.custom-dropdown-button:focus {
+  background-color: white !important;
+  color: black !important;
+}
+
+.custom-dropdown-button:active + .dropdown-menu .dropdown-item {
+  background-color: white !important;
+  color: black !important;
+}
+
+.dropdown-menu {
+  background-color: white !important;
+  border: 1px solid black !important; /* Add border to prevent default Bootstrap styles */
+}
+
+.dropdown-item {
+  color: black !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:active {
+  background-color: #f8f9fa !important; /* Hover color */
+  color: black !important;
+}
+
+.additional-options-container {
+  display: flex;
+  margin-top: 10px;
+}
+
+.additional-options-text {
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.additional-options-button-primary {
+  margin-left: 10px;
+  background-color: black !important;
+  border-color: black !important;
+  color: white !important;
+  cursor: pointer;
+}
+
+.additional-options-button-primary:hover,
+.additional-options-button-primary:active,
+.additional-options-button-primary:focus {
+  background-color: black !important;
+  border-color: black !important;
+  color: white !important;
+}
