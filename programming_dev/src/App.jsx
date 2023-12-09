@@ -1,5 +1,5 @@
 import {CreatePost} from './components/CreatePost'
-import {Posts} from './components/Posts'
+import {Index} from './components/Index'
 import {Search} from './components/Search'
 import {Switch,Route} from 'react-router-dom'
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -32,9 +32,9 @@ function App() {
         </div>
       <Switch>
           <Route path="/createPost" component={CreatePost} />
-          <Route path="/posts" component={Posts} />
+          <Route path="/posts" component={Index} />
           <Route path="/search" component={Search} />
-          <Route path="/" component={Posts} />
+          <Route path="/" component={Index} />
       </Switch>
     </>
   )
