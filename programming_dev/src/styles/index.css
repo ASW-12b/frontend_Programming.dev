@@ -1,0 +1,30 @@
+.custom-margin {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+.custom-margin2 {
+    margin-top: 20px;
+
+}
+.filtre {
+    margin-top: 20px;
+}
+
+/* CSS for button styling */
+.rareButton button {
+  color: black; /* Default text color */
+  background-color: white !important; /* Default background color, !important to override Bootstrap styles */
+}
+
+/* CSS for hover and selected button styling */
+.rareButton button.selected {
+  background-color: lightgrey !important; /* Change to your desired selected and hover background color */
+  color: black !important; /* Change to your desired selected and hover text color */
+}
+
+.rareButton button:hover {
+    background-color: whitesmoke !important; /* Change to your desired selected and hover background color */
+    color: black !important; /* Change to your desired selected and hover text color */
+}
+
+
