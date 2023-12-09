@@ -4,6 +4,11 @@
     margin-right: 200px;
 }
 
+.custom-margin2 {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
 .form-box {
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;

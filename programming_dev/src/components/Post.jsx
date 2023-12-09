@@ -9,11 +9,11 @@ import { faStar } from '@fortawesome/free-regular-svg-icons'
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { Dropdown } from 'react-bootstrap';
+import { CommentsPost } from './CommentsPost';
 
 export function Post () {
     let {postId} = useParams()
     const [post,setPost] = useState(null)
-    const [comments,setComments] = useState([])
     function getPost() {
         return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
             method: 'GET',
@@ -94,6 +94,7 @@ export function Post () {
         ) : (
             <p>Cargando.....</p>
         )}
+        <CommentsPost id={postId}/>
         </>
 
         
