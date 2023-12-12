@@ -112,7 +112,6 @@ export function Perfil () {
                     } else if (selectedButton === 'Desats') {
                         setUserDesatsP(userData2.liked_posts || []);
                         setUserDesatsC(userData2.liked_comments || []);
-
                     }
                 } else {
                     console.error('No data received from the API');
@@ -285,9 +284,96 @@ export function Perfil () {
                         </div>
                     )
                 ) : selectedButton === 'Desats' ? (
-                    <div>
-                        <p>No ha fet cap comentari</p>
-                    </div>
+                    <>
+                    {userDesatsP.length > 0 ? (
+                        userDesatsP.map(dp => (
+                            <div key={dp.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
+                                <a style={{color:'black',textDecoration:'none'}} href={`/posts/${dp.id}`}>
+                                    <h4><b>{dp.title}</b></h4>
+                                </a>
+                                <div className="row px-4">
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <p>{dp.numComments}</p>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                    </div>
+                                    <div className="col-auto">
+                                        <p className="mr-2">
+                                        </p>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                    </div>
+                                    <div className="dropdown col-auto">
+                                        <Dropdown>
+                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                &#8942;
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </div>
+                                </div>
+                                <hr className="my-3"></hr>
+                            </div>
+                        ))
+                    ) : null}
+
+                    {userDesatsC.length > 0 ? (
+                        userDesatsC.map(dc => (
+                            <div key={dc.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
+                                <a style={{color:'black',textDecoration:'none'}} href={`/posts/${dc.id}`}>
+                                    <h4><b>{dc.content}</b></h4>
+                                </a>
+                                <div className="row px-4">
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                    </div>
+                                    <div className="col-auto">
+                                        <p className="mr-2">
+                                        </p>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                    </div>
+                                    <div className="dropdown col-auto">
+                                        <Dropdown>
+                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                &#8942;
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </div>
+                                </div>
+                                <hr className="my-3"></hr>
+                            </div>
+                        ))
+                    ) : null}
+
+                    {userDesatsP.length === 0 && userDesatsC.length === 0 ? (
+                        <div>
+                            <p>No hi ha desats</p>
+                        </div>
+                    ) : null}
+                    </>
                 ) : null}
             </div>
         ) : (
