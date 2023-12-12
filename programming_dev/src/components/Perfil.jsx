@@ -15,12 +15,16 @@ import { Dropdown } from 'react-bootstrap';
 
 export function Perfil () {
     let {username} = useParams()
-    const [user,setUser] = useState(null)
+    const [user, setUser] = useState(null)
     const [userPosts, setUserPosts] = useState([]);
     const [userComments, setUserComments] = useState([]);
+    const [selectedOrder, setSelectedOrder] = useState('Nou'); // Default value
+    const [selectedButton, setSelectedButton] = useState('Publicacions'); // Default value
 
-    function getUser() {
-        return fetch(`https://apiprogrammingdev.onrender.com/user/${username}`, {
+    function getUser(filter, order) {
+        const apiUrl = `https://apiprogrammingdev.onrender.com/user/${username}?Filtre=${filter}&Tipus_Ordenacio=${order}`;
+
+        return fetch(apiUrl, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +54,7 @@ export function Perfil () {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const userData = await getUser();
+                const userData = await getUser(selectedOrder, selectedButton);
                 const formattedDateJoined = formatDate(userData.date_joined);
                 setUser({
                     ...userData,
@@ -61,38 +65,78 @@ export function Perfil () {
             }
         };
         fetchUser();
-    }, []);
+    }, [selectedOrder, selectedButton]);
+
+    const handleOrderChange = (eventKey) => {
+        setSelectedOrder(eventKey);
+    };
+
+    // Handle button click
+    const handleButtonClick = (button) => {
+        setSelectedButton(button);
+    };
 
     return (
         <>
-            {user ? (
-            <div className="profile-container">
-                <div className="banner-container">
-                    {user.banner && <img src={user.banner.url} alt="Banner" className="banner-image" />}
-                </div>
-                <div className="profile-content">
-                    <img src={user.avatar && user.avatar.url} alt="Avatar" className="profile-avatar" />
-                    <h1 className="title-user">
-                        {user.first_name} {user.last_name}
-                    </h1>
+        {user ? (
+            <div className='form-box'>
+                <div className="profile-container">
+                    <div className="banner-container">
+                        {user.banner && <img src={user.banner.url} alt="Banner" className="banner-image"/>}
+                    </div>
+                    <div className="profile-content">
+                        <img src={user.avatar && user.avatar.url} alt="Avatar" className="profile-avatar"/>
+                        <h1 className="title-user">
+                            {user.first_name} {user.last_name}
+                        </h1>
 
                         <a href='#' className="edit-icon">
-                            <FontAwesomeIcon icon={faEdit} />
+                            <FontAwesomeIcon icon={faEdit}/>
                         </a>
 
+                    </div>
+                    <div className="profile-info">
+                        <p>@{user.username}</p>
+                        <p>{user.bio}</p>
+                        <p>
+                            <strong>Data de registre:</strong> {user.date_joined}
+                        </p>
+                        <div className="profile-stats">
+                            <p><strong>{user.num_publicacions}</strong> Publicacions</p>
+                            <p><strong>{user.num_comentaris}</strong> Comentaris</p>
+                            <p><strong>API: {user.api_key}</strong></p>
+                        </div>
+                    </div>
                 </div>
-                <div className="profile-info">
-                    <p>@{user.username}</p>
-                    <p>{user.bio}</p>
-                    <p>
-                        <strong>Data de registre:</strong> {user.date_joined}
-                    </p>
-
+                <div className="btn-group custom-margin" role="group" aria-label="Basic example">
+                    {/* Dropdown menu */}
+                    <Dropdown onSelect={handleOrderChange} className="mb-3">
+                        <Dropdown.Toggle variant="light" id="order-dropdown">
+                            {selectedOrder}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item eventKey="Nou">Nou</Dropdown.Item>
+                            <Dropdown.Item eventKey="Antic">Antic</Dropdown.Item>
+                            <Dropdown.Item eventKey="Mes Comentaris">Més Comentaris</Dropdown.Item>
+                            <Dropdown.Item eventKey="Mes popular">Més Popular</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
+                <div className="btn-group rareButton" role="group" aria-label="Basic example">
+                    <button className={`btn btn-secondary ${selectedButton === 'Publicacions' ? 'selected' : ''}`}
+                            onClick={() => handleButtonClick('Publicacions')}>Publicacions
+                    </button>
+                    <button className={`btn btn-secondary ${selectedButton === 'Comentaris' ? 'selected' : ''}`}
+                            onClick={() => handleButtonClick('Comentaris')}>Comentaris
+                    </button>
+                    <button className={`btn btn-secondary ${selectedButton === 'Desats' ? 'selected' : ''}`}
+                            onClick={() => handleButtonClick('Desats')}>Desats
+                    </button>
                 </div>
             </div>
-            ) : (
-                <p>Carregant...</p>
-            )}
+        ) : (
+            <p>Carregant...</p>
+        )}
         </>
-    )
+    );
 }
