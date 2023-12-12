@@ -18,13 +18,12 @@ export function Perfil () {
     const [user, setUser] = useState(null)
     const [userPosts, setUserPosts] = useState([]);
     const [userComments, setUserComments] = useState([]);
+    const [userDesats, setUserDesats] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState('Nou'); // Default value
     const [selectedButton, setSelectedButton] = useState('Publicacions'); // Default value
 
-    function getUser(filter, order) {
-        const apiUrl = `https://apiprogrammingdev.onrender.com/user/${username}?Filtre=${filter}&Tipus_Ordenacio=${order}`;
-
-        return fetch(apiUrl, {
+    function getUserInfo() {
+        return fetch(`https://apiprogrammingdev.onrender.com/user/${username}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -52,9 +51,9 @@ export function Perfil () {
     };
 
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchUserInfo = async () => {
             try {
-                const userData = await getUser(selectedOrder, selectedButton);
+                const userData = await getUserInfo();
                 const formattedDateJoined = formatDate(userData.date_joined);
                 setUser({
                     ...userData,
@@ -64,8 +63,64 @@ export function Perfil () {
                 console.error('Error fetching user data:', error);
             }
         };
+        fetchUserInfo();
+    }, []);
+
+    function getUser(filter, order) {
+        let apiUrl;
+
+        if (filter === 'Publicacions') {
+            apiUrl = `https://apiprogrammingdev.onrender.com/user/${username}/posts`;
+        } else if (filter === 'Comentaris') {
+            apiUrl = `https://apiprogrammingdev.onrender.com/user/${username}/comments`;
+        } else if (filter === 'Desats') {
+            apiUrl = `https://apiprogrammingdev.onrender.com/user/${username}/desats`;
+        }
+
+        const url = `${apiUrl}?Filtre=${filter}&Tipus_Ordenacio=${order}`;
+
+        console.log(url)
+
+        return fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                    console.log(data)
+                    return data
+                }
+            )
+            .catch(error => {
+                console.error('Error making API call:', error);
+            });
+    }
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData2 = await getUser(selectedButton, selectedOrder);
+                if (userData2) {
+                    if (selectedButton === 'Comentaris') {
+                        setUserComments(userData2.user_comments || []);
+                    } else if (selectedButton === 'Publicacions') {
+                        setUserPosts(userData2.user_posts || []);
+                    } else if (selectedButton === 'Desats') {
+                        setUserDesats(userData2.user_desats || []);
+                    }
+                } else {
+                    console.error('No data received from the API');
+                }
+
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
         fetchUser();
-    }, [selectedOrder, selectedButton]);
+    }, [selectedButton, selectedOrder]);
 
     const handleOrderChange = (eventKey) => {
         setSelectedOrder(eventKey);
@@ -133,10 +188,26 @@ export function Perfil () {
                             onClick={() => handleButtonClick('Desats')}>Desats
                     </button>
                 </div>
+
+                {selectedButton === 'Publicacions' ? (
+                    <div>
+                        <p>No hi ha cap comentari per mostrar</p>
+                    </div>
+                ) : selectedButton === 'Comentaris' ? (
+                    <div>
+                        <p>No hi ha cap comentari per mostrar</p>
+                    </div>
+
+                ) : selectedButton === 'Desats' ? (
+                    <div>
+                        <p>No hi ha cap desat per mostrar</p>
+                    </div>
+
+                ) : null}
             </div>
         ) : (
             <p>Carregant...</p>
         )}
-        </>
-    );
+            </>
+        );
 }
