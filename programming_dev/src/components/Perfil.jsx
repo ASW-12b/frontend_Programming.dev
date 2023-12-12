@@ -11,6 +11,7 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { faEdit } from '@fortawesome/free-regular-svg-icons'
 import { Dropdown } from 'react-bootstrap';
+import EditPerfil from "./EditPerfil.jsx";
 
 
 export function Perfil () {
@@ -22,6 +23,7 @@ export function Perfil () {
     const [userDesatsP, setUserDesatsP] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState('Nou'); // Default value
     const [selectedButton, setSelectedButton] = useState('Publicacions'); // Default value
+    const [editMode, setEditMode] = useState(false);
 
     function getUserInfo() {
         return fetch(`https://apiprogrammingdev.onrender.com/user/${username}`, {
@@ -133,252 +135,265 @@ export function Perfil () {
         setSelectedButton(button);
     };
 
+    const handleEditClick = () => {
+        setEditMode(true);
+    };
+
+    const handleSaveChanges = () => {
+        setEditMode(false);
+    };
+
     return (
         <>
-        {user ? (
-            <div className='form-box'>
-                <div className="profile-container">
-                    <div className="banner-container">
-                        {user.banner && <img src={user.banner.url} alt="Banner" className="banner-image"/>}
-                    </div>
-                    <div className="profile-content">
-                        <img src={user.avatar && user.avatar.url} alt="Avatar" className="profile-avatar"/>
-                        <h1 className="title-user">
-                            {user.first_name} {user.last_name}
-                        </h1>
-
-                        <a href='#' className="edit-icon">
-                            <FontAwesomeIcon icon={faEdit}/>
-                        </a>
-
-                    </div>
-                    <div className="profile-info">
-                        <p>@{user.username}</p>
-                        <p>{user.bio}</p>
-                        <p>
-                            <strong>Data de registre:</strong> {user.date_joined}
-                        </p>
-                        <div className="profile-stats">
-                            <p><strong>{user.num_publicacions}</strong> Publicacions</p>
-                            <p><strong>{user.num_comentaris}</strong> Comentaris</p>
-                            <p><strong>API: {user.api_key}</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div className="btn-group custom-margin" role="group" aria-label="Basic example">
-                    {/* Dropdown menu */}
-                    <Dropdown onSelect={handleOrderChange} className="mb-3">
-                        <Dropdown.Toggle variant="light" id="order-dropdown">
-                            {selectedOrder}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item eventKey="Nou">Nou</Dropdown.Item>
-                            <Dropdown.Item eventKey="Antic">Antic</Dropdown.Item>
-                            <Dropdown.Item eventKey="Mes Comentaris">Més Comentaris</Dropdown.Item>
-                            <Dropdown.Item eventKey="Mes popular">Més Popular</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </div>
-                <div className="btn-group rareButton" role="group" aria-label="Basic example">
-                    <button className={`btn btn-secondary ${selectedButton === 'Publicacions' ? 'selected' : ''}`}
-                            onClick={() => handleButtonClick('Publicacions')}>Publicacions
-                    </button>
-                    <button className={`btn btn-secondary ${selectedButton === 'Comentaris' ? 'selected' : ''}`}
-                            onClick={() => handleButtonClick('Comentaris')}>Comentaris
-                    </button>
-                    <button className={`btn btn-secondary ${selectedButton === 'Desats' ? 'selected' : ''}`}
-                            onClick={() => handleButtonClick('Desats')}>Desats
-                    </button>
-                </div>
-
-                {selectedButton === 'Publicacions' ? (
-                    userPosts.length > 0 ? (
-                        userPosts.map(p => (
-                            <div key={p.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                                <a style={{color:'black',textDecoration:'none'}} href={`/posts/${p.id}`}>
-                                    <h4><b>{p.title}</b></h4>
-                                </a>
-                                <div className="row px-4">
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <p>{p.numComments}</p>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
-                                    </div>
-                                    <div className="col-auto">
-                                        <p className="mr-2">
-                                        </p>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
-                                    </div>
-                                    <div className="dropdown col-auto">
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                &#8942;
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
+            {editMode ? (
+                <EditPerfil user={user} onSave={handleSaveChanges} onCancel={() => setEditMode(false)} />
+            ) : (
+                <>
+                    {user ? (
+                        <div className='form-box'>
+                            <div className="profile-container">
+                                <div className="banner-container">
+                                    {user.banner && <img src={user.banner.url} alt="Banner" className="banner-image"/>}
+                                </div>
+                                <div className="profile-content">
+                                    <img src={user.avatar && user.avatar.url} alt="Avatar" className="profile-avatar"/>
+                                    <h1 className="title-user">
+                                        {user.first_name} {user.last_name}
+                                    </h1>
+                                    <a href='#' className="edit-icon" onClick={handleEditClick}>
+                                        <FontAwesomeIcon icon={faEdit}/>
+                                    </a>
+                                </div>
+                                <div className="profile-info">
+                                    <p>@{user.username}</p>
+                                    <p>{user.bio}</p>
+                                    <p>
+                                        <strong>Data de registre:</strong> {user.date_joined}
+                                    </p>
+                                    <div className="profile-stats">
+                                        <p><strong>{user.num_publicacions}</strong> Publicacions</p>
+                                        <p><strong>{user.num_comentaris}</strong> Comentaris</p>
+                                        <p><strong>API: {user.api_key}</strong></p>
                                     </div>
                                 </div>
-                                <hr className="my-3"></hr>
                             </div>
-                        ))
+
+                            <div className="btn-group custom-margin" role="group" aria-label="Basic example">
+                                {/* Dropdown menu */}
+                                <Dropdown onSelect={handleOrderChange} className="mb-3">
+                                    <Dropdown.Toggle variant="light" id="order-dropdown">
+                                        {selectedOrder}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item eventKey="Nou">Nou</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Antic">Antic</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Mes Comentaris">Més Comentaris</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Mes popular">Més Popular</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
+                            <div className="btn-group rareButton" role="group" aria-label="Basic example">
+                                <button className={`btn btn-secondary ${selectedButton === 'Publicacions' ? 'selected' : ''}`}
+                                        onClick={() => handleButtonClick('Publicacions')}>Publicacions
+                                </button>
+                                <button className={`btn btn-secondary ${selectedButton === 'Comentaris' ? 'selected' : ''}`}
+                                        onClick={() => handleButtonClick('Comentaris')}>Comentaris
+                                </button>
+                                <button className={`btn btn-secondary ${selectedButton === 'Desats' ? 'selected' : ''}`}
+                                        onClick={() => handleButtonClick('Desats')}>Desats
+                                </button>
+                            </div>
+
+                            {selectedButton === 'Publicacions' ? (
+                                userPosts.length > 0 ? (
+                                    userPosts.map(p => (
+                                        <div key={p.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
+                                            <a style={{color:'black',textDecoration:'none'}} href={`/posts/${p.id}`}>
+                                                <h4><b>{p.title}</b></h4>
+                                            </a>
+                                            <div className="row px-4">
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <p>{p.numComments}</p>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                                </div>
+                                                <div className="col-auto">
+                                                    <p className="mr-2">
+                                                    </p>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                                </div>
+                                                <div className="dropdown col-auto">
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                            &#8942;
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </div>
+                                            </div>
+                                            <hr className="my-3"></hr>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div>
+                                        <p>No ha fet cap publicació</p>
+                                    </div>
+                                )
+
+                            ) : selectedButton === 'Comentaris' ? (
+                                userComments.length > 0 ? (
+                                    userComments.map(c => (
+                                        <div key={c.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
+                                            <a style={{color:'black',textDecoration:'none'}} href={`/posts/${c.id}`}>
+                                                <h4><b>{c.content}</b></h4>
+                                            </a>
+                                            <div className="row px-4">
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                                </div>
+                                                <div className="col-auto">
+                                                    <p className="mr-2">
+                                                    </p>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                                </div>
+                                                <div className="dropdown col-auto">
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                            &#8942;
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </div>
+                                            </div>
+                                            <hr className="my-3"></hr>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div>
+                                        <p>No ha fet cap comentari</p>
+                                    </div>
+                                )
+                            ) : selectedButton === 'Desats' ? (
+                                <>
+                                {userDesatsP.length > 0 ? (
+                                    userDesatsP.map(dp => (
+                                        <div key={dp.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
+                                            <a style={{color:'black',textDecoration:'none'}} href={`/posts/${dp.id}`}>
+                                                <h4><b>{dp.title}</b></h4>
+                                            </a>
+                                            <div className="row px-4">
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <p>{dp.numComments}</p>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                                </div>
+                                                <div className="col-auto">
+                                                    <p className="mr-2">
+                                                    </p>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                                </div>
+                                                <div className="dropdown col-auto">
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                            &#8942;
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </div>
+                                            </div>
+                                            <hr className="my-3"></hr>
+                                        </div>
+                                    ))
+                                ) : null}
+
+                                {userDesatsC.length > 0 ? (
+                                    userDesatsC.map(dc => (
+                                        <div key={dc.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
+                                            <a style={{color:'black',textDecoration:'none'}} href={`/posts/${dc.id}`}>
+                                                <h4><b>{dc.content}</b></h4>
+                                            </a>
+                                            <div className="row px-4">
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                                </div>
+                                                <div className="col-auto">
+                                                    <p className="mr-2">
+                                                    </p>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                                </div>
+                                                <div className="col-auto mr-2">
+                                                    <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                                </div>
+                                                <div className="dropdown col-auto">
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                            &#8942;
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </div>
+                                            </div>
+                                            <hr className="my-3"></hr>
+                                        </div>
+                                    ))
+                                ) : null}
+
+                                {userDesatsP.length === 0 && userDesatsC.length === 0 ? (
+                                    <div>
+                                        <p>No hi ha desats</p>
+                                    </div>
+                                ) : null}
+                                </>
+                            ) : null}
+                        </div>
                     ) : (
-                        <div>
-                            <p>No ha fet cap publicació</p>
-                        </div>
-                    )
-
-                ) : selectedButton === 'Comentaris' ? (
-                    userComments.length > 0 ? (
-                        userComments.map(c => (
-                            <div key={c.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                                <a style={{color:'black',textDecoration:'none'}} href={`/posts/${c.id}`}>
-                                    <h4><b>{c.content}</b></h4>
-                                </a>
-                                <div className="row px-4">
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
-                                    </div>
-                                    <div className="col-auto">
-                                        <p className="mr-2">
-                                        </p>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
-                                    </div>
-                                    <div className="dropdown col-auto">
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                &#8942;
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </div>
-                                </div>
-                                <hr className="my-3"></hr>
-                            </div>
-                        ))
-                    ) : (
-                        <div>
-                            <p>No ha fet cap comentari</p>
-                        </div>
-                    )
-                ) : selectedButton === 'Desats' ? (
-                    <>
-                    {userDesatsP.length > 0 ? (
-                        userDesatsP.map(dp => (
-                            <div key={dp.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                                <a style={{color:'black',textDecoration:'none'}} href={`/posts/${dp.id}`}>
-                                    <h4><b>{dp.title}</b></h4>
-                                </a>
-                                <div className="row px-4">
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <p>{dp.numComments}</p>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
-                                    </div>
-                                    <div className="col-auto">
-                                        <p className="mr-2">
-                                        </p>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
-                                    </div>
-                                    <div className="dropdown col-auto">
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                &#8942;
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </div>
-                                </div>
-                                <hr className="my-3"></hr>
-                            </div>
-                        ))
-                    ) : null}
-
-                    {userDesatsC.length > 0 ? (
-                        userDesatsC.map(dc => (
-                            <div key={dc.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                                <a style={{color:'black',textDecoration:'none'}} href={`/posts/${dc.id}`}>
-                                    <h4><b>{dc.content}</b></h4>
-                                </a>
-                                <div className="row px-4">
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
-                                    </div>
-                                    <div className="col-auto">
-                                        <p className="mr-2">
-                                        </p>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
-                                    </div>
-                                    <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
-                                    </div>
-                                    <div className="dropdown col-auto">
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                &#8942;
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </div>
-                                </div>
-                                <hr className="my-3"></hr>
-                            </div>
-                        ))
-                    ) : null}
-
-                    {userDesatsP.length === 0 && userDesatsC.length === 0 ? (
-                        <div>
-                            <p>No hi ha desats</p>
-                        </div>
-                    ) : null}
-                    </>
-                ) : null}
-            </div>
-        ) : (
-            <p>Carregant...</p>
-        )}
+                        <p>Carregant...</p>
+                    )}
+                </>
+            )}
         </>
     )
 }
