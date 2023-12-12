@@ -18,7 +18,8 @@ export function Perfil () {
     const [user, setUser] = useState(null)
     const [userPosts, setUserPosts] = useState([]);
     const [userComments, setUserComments] = useState([]);
-    const [userDesats, setUserDesats] = useState([]);
+    const [userDesatsC, setUserDesatsC] = useState([]);
+    const [userDesatsP, setUserDesatsP] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState('Nou'); // Default value
     const [selectedButton, setSelectedButton] = useState('Publicacions'); // Default value
 
@@ -109,7 +110,9 @@ export function Perfil () {
                     } else if (selectedButton === 'Publicacions') {
                         setUserPosts(userData2.user_posts || []);
                     } else if (selectedButton === 'Desats') {
-                        setUserDesats(userData2.user_desats || []);
+                        setUserDesatsP(userData2.liked_posts || []);
+                        setUserDesatsC(userData2.liked_comments || []);
+
                     }
                 } else {
                     console.error('No data received from the API');
@@ -190,24 +193,106 @@ export function Perfil () {
                 </div>
 
                 {selectedButton === 'Publicacions' ? (
-                    <div>
-                        <p>No hi ha cap comentari per mostrar</p>
-                    </div>
-                ) : selectedButton === 'Comentaris' ? (
-                    <div>
-                        <p>No hi ha cap comentari per mostrar</p>
-                    </div>
+                    userPosts.length > 0 ? (
+                        userPosts.map(p => (
+                            <div key={p.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
+                                <a style={{color:'black',textDecoration:'none'}} href={`/posts/${p.id}`}>
+                                    <h4><b>{p.title}</b></h4>
+                                </a>
+                                <div className="row px-4">
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <p>{p.numComments}</p>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                    </div>
+                                    <div className="col-auto">
+                                        <p className="mr-2">
+                                        </p>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                    </div>
+                                    <div className="dropdown col-auto">
+                                        <Dropdown>
+                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                &#8942;
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </div>
+                                </div>
+                                <hr className="my-3"></hr>
+                            </div>
+                        ))
+                    ) : (
+                        <div>
+                            <p>No ha fet cap publicació</p>
+                        </div>
+                    )
 
+                ) : selectedButton === 'Comentaris' ? (
+                    userComments.length > 0 ? (
+                        userComments.map(c => (
+                            <div key={c.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
+                                <a style={{color:'black',textDecoration:'none'}} href={`/posts/${c.id}`}>
+                                    <h4><b>{c.content}</b></h4>
+                                </a>
+                                <div className="row px-4">
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                    </div>
+                                    <div className="col-auto">
+                                        <p className="mr-2">
+                                        </p>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                    </div>
+                                    <div className="col-auto mr-2">
+                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                    </div>
+                                    <div className="dropdown col-auto">
+                                        <Dropdown>
+                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                &#8942;
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </div>
+                                </div>
+                                <hr className="my-3"></hr>
+                            </div>
+                        ))
+                    ) : (
+                        <div>
+                            <p>No ha fet cap comentari</p>
+                        </div>
+                    )
                 ) : selectedButton === 'Desats' ? (
                     <div>
-                        <p>No hi ha cap desat per mostrar</p>
+                        <p>No ha fet cap comentari</p>
                     </div>
-
                 ) : null}
             </div>
         ) : (
             <p>Carregant...</p>
         )}
-            </>
-        );
+        </>
+    )
 }
