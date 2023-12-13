@@ -30,7 +30,6 @@ export function Perfil () {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
             },
         })
             .then(response => response.json())
@@ -81,8 +80,6 @@ export function Perfil () {
         }
 
         const url = `${apiUrl}?Filtre=${filter}&Tipus_Ordenacio=${order}`;
-
-        console.log(url)
 
         return fetch(url, {
             method: 'GET',
@@ -139,8 +136,34 @@ export function Perfil () {
         setEditMode(true);
     };
 
+    const updateUser = async () => {
+        try {
+            const response = await fetch(`https://apiprogrammingdev.onrender.com/user/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                const userData = await response.json();
+                const formattedDateJoined = formatDate(userData.date_joined);
+                setUser({
+                    ...userData,
+                    date_joined: formattedDateJoined,
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+
+    useEffect(() => {
+        updateUser();
+    }, []);
+
     const handleSaveChanges = () => {
         setEditMode(false);
+        updateUser();
     };
 
     return (
@@ -153,10 +176,10 @@ export function Perfil () {
                         <div className='form-box'>
                             <div className="profile-container">
                                 <div className="banner-container">
-                                    {user.banner && <img src={user.banner.url} alt="Banner" className="banner-image"/>}
+                                    {user.banner && <img src={user.banner} alt="" className="banner-image"/>}
                                 </div>
                                 <div className="profile-content">
-                                    <img src={user.avatar && user.avatar.url} alt="Avatar" className="profile-avatar"/>
+                                    <img src={user.avatar && user.avatar} alt="" className="profile-avatar"/>
                                     <h1 className="title-user">
                                         {user.first_name} {user.last_name}
                                     </h1>

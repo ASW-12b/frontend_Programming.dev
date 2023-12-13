@@ -49,3 +49,15 @@
     color: #007bff;
     padding: 10px 20px;
 }
+
+.avatar_edit {
+    width: 30px;
+    height: 30px;
+    margin-right: 20px;
+}
+
+.banner-edit {
+    width: 60px;
+    height: 30px;
+    margin-right: 20px;
+}
