@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../styles/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown,faArrowUp } from '@fortawesome/free-solid-svg-icons'
-import { faTrashCan,faPenToSquare ,faStar,faComment} from '@fortawesome/free-regular-svg-icons'
+import { /*faTrashCan,faPenToSquare ,*/faStar,faComment} from '@fortawesome/free-regular-svg-icons'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown } from 'react-bootstrap';
 
@@ -141,17 +141,19 @@ export function Index() {
                                 <div className="col-auto mr-2">
                                         <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
                                 </div>
+                                {/*
                                 <div className="dropdown col-auto">
                                     <Dropdown>
                                         <Dropdown.Toggle variant="light" id="dropdown-basic">
                                             &#8942;
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
-                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                            <Dropdown.Item href={`/posts/${p.pk}`}><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
                                             <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </div>
+                    */}
                             </div>
                             <hr className="my-3"></hr>
                         </div>

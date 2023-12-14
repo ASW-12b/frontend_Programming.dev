@@ -1,4 +1,3 @@
-import React from 'react'
 import {useState,useEffect} from 'react'
 import { useHistory } from 'react-router-dom';
 import '../styles/layout.css'
@@ -11,7 +10,7 @@ export function CreatePost() {
         url: '',
         title: '',
         description: '',
-        communitat: '',
+        comunitat: '',
     });
 
     const handleInputChange = event => {
@@ -136,7 +135,7 @@ export function CreatePost() {
 
             <label className="col-sm-2 col-form-label">Comunidad</label>
             <div className="col-sm-10">
-              <select className="form-control" name="comunitat" value={formData.community} onChange={handleInputChange} required>
+              <select className="form-control" name="comunitat" value={formData.comunitat} onChange={handleInputChange} required>
                 <option key="default" value="default">Select and option</option>
                 {communities.map(c => {
                     return (
