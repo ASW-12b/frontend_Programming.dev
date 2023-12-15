@@ -85,7 +85,7 @@ export function Perfil () {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
+                'Authorization': 'Bearer ${token}',
             },
         })
             .then(response => response.json())
@@ -270,7 +270,7 @@ export function Perfil () {
                                         </div>
                                     ))
                                 ) : (
-                                    <div>
+                                    <div className="custom-margin">
                                         <p>No ha fet cap publicació</p>
                                     </div>
                                 )
@@ -315,7 +315,7 @@ export function Perfil () {
                                         </div>
                                     ))
                                 ) : (
-                                    <div>
+                                    <div className="custom-margin">
                                         <p>No ha fet cap comentari</p>
                                     </div>
                                 )
@@ -405,7 +405,7 @@ export function Perfil () {
                                 ) : null}
 
                                 {userDesatsP.length === 0 && userDesatsC.length === 0 ? (
-                                    <div>
+                                    <div className="custom-margin">
                                         <p>No hi ha desats</p>
                                     </div>
                                 ) : null}

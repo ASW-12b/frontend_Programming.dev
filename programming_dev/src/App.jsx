@@ -9,9 +9,22 @@ import './styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { Dropdown } from 'react-bootstrap';
+import React, { useState } from 'react';
 
 
 function App() {
+    const [globalToken, setGlobalToken] = useState('');
+
+    const handleUserSelection = (selectedUser) => {
+        let token = '';
+        if (selectedUser === 'fernando33') {
+            token = 'f54b3557-06d6-4dcb-b95f-d297fd821738';
+        } else if (selectedUser === 'adrian.contreras.martin') {
+            token = '3ed9e367-519d-4435-8b35-c15d829e528f';
+        }
+        setGlobalToken(token);
+    }
+
   return (
     <>
       <div className="custom-margin">
@@ -27,13 +40,13 @@ function App() {
                         <Dropdown>
                             <Dropdown.Toggle href="#"
                                 id="userDropdown" style={{ marginRight: '10px' }}>
-                                User
+                                Usuaris
                             </Dropdown.Toggle>
 
                             {/* Dropdown Menu */}
                             <Dropdown.Menu aria-labelledby="userDropdown">
-                                <Dropdown.Item href="/user/:username">El meu Perfil</Dropdown.Item>
-                                <Dropdown.Item href="#">Tancar Sessió</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleUserSelection('fernando33')}>fernando33</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleUserSelection('adrian.contreras.martin')}>adrian.contreras.martin</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
