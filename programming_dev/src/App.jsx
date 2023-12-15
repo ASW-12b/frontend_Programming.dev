@@ -14,15 +14,17 @@ import { Dropdown } from 'react-bootstrap';
 
 function App() {
     const [globalToken, setGlobalToken] = useState('');
+    const [selectedUser, setSelectedUser] = useState('')
 
-    const handleUserSelection = (selectedUser) => {
+    const handleUserSelection = (user) => {
         let token = '';
-        if (selectedUser === 'fernando33') {
+        if (user === 'fernando33') {
             token = 'f54b3557-06d6-4dcb-b95f-d297fd821738';
-        } else if (selectedUser === 'adrian.contreras.martin') {
+        } else if (user === 'adrian.contreras.martin') {
             token = '3ed9e367-519d-4435-8b35-c15d829e528f';
         }
         setGlobalToken(token);
+        setSelectedUser(user)
     }
 
   return (
@@ -45,8 +47,10 @@ function App() {
 
                             {/* Dropdown Menu */}
                             <Dropdown.Menu aria-labelledby="userDropdown">
-                                <Dropdown.Item onClick={() => handleUserSelection('fernando33')}>fernando33</Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleUserSelection('adrian.contreras.martin')}>adrian.contreras.martin</Dropdown.Item>
+                                <Dropdown.Item style={{ backgroundColor: selectedUser === 'fernando33' ? '#c4c4c4' : 'transparent' }}
+                                               onClick={() => handleUserSelection('fernando33')}>fernando33</Dropdown.Item>
+                                <Dropdown.Item style={{ backgroundColor: selectedUser === 'adrian.contreras.martin' ? '#c4c4c4' : 'transparent' }}
+                                               onClick={() => handleUserSelection('adrian.contreras.martin')}>adrian.contreras.martin</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
