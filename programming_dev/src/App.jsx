@@ -14,7 +14,8 @@ import { Dropdown } from 'react-bootstrap';
 
 function App() {
     const [globalToken, setGlobalToken] = useState('');
-    const [selectedUser, setSelectedUser] = useState('')
+    const [selectedUser, setSelectedUser] = useState('');
+
 
     const handleUserSelection = (user) => {
         let token = '';
@@ -24,7 +25,7 @@ function App() {
             token = '3ed9e367-519d-4435-8b35-c15d829e528f';
         }
         setGlobalToken(token);
-        setSelectedUser(user)
+        setSelectedUser(user);
     }
 
   return (
@@ -51,6 +52,11 @@ function App() {
                                                onClick={() => handleUserSelection('fernando33')}>fernando33</Dropdown.Item>
                                 <Dropdown.Item style={{ backgroundColor: selectedUser === 'adrian.contreras.martin' ? '#c4c4c4' : 'transparent' }}
                                                onClick={() => handleUserSelection('adrian.contreras.martin')}>adrian.contreras.martin</Dropdown.Item>
+                                {selectedUser && (
+                                    <Dropdown.Item href={`/user/${selectedUser}`}>
+                                        El meu perfil
+                                    </Dropdown.Item>
+                                )}
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
