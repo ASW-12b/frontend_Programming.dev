@@ -8,8 +8,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { Dropdown } from 'react-bootstrap';
-import React, { useState } from 'react';
+
+
 
 
 function App() {
