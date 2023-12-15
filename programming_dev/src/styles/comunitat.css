@@ -1,0 +1,37 @@
+.custom-margin {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+h1 {
+    font-size: 20px;
+    margin-top: 10px; /* Increase the margin above the dropdown menu */
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: #f2f2f2;
+}
+.margin-button {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.align-right {
+    background-color: white;
+    border-color: black;
+    color: black;
+    float: right;
+    margin-bottom: 20px;
+}
+
+.cb {
+    background-color: white;
+    border-color: black;
+    color: black;
+}
