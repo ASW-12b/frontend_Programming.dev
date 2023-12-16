@@ -3,9 +3,6 @@ import { faArrowDown, faReply } from '@fortawesome/free-solid-svg-icons'
 import { faStar } from '@fortawesome/free-regular-svg-icons'
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
-import { Dropdown } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
-import {useState,useEffect} from 'react'
 import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 

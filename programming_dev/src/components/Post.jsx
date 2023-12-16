@@ -11,7 +11,8 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { Dropdown } from 'react-bootstrap';
 import { CommentsPost } from './CommentsPost';
-import {getPost} from '../controllers/CtrlPost'
+import {getPost,editPost, deletePost} from '../controllers/CtrlPost'
+import { getCommunities } from '../controllers/CtrlCommunities';
 
 
 
@@ -38,40 +39,11 @@ export function Post () {
 
     const handleSubmit = event => {
         event.preventDefault();
-        console.log(JSON.stringify(formData.comunitat))
-        return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`,
-            {method: 'PUT',
-            mode: 'cors', 
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
-            }
-            },)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                setEditing(false)
-                return data
-            })
-            .catch(error => {
-                console.error('Error al enviar la solicitud:', error);
-              });
-         
+        editPost(formData,postId)
+        setEditing(false)
       };
-    function getCommunities() {
-        return fetch('https://apiprogrammingdev.onrender.com/communities',
-        {method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-        },)
-              .then(response => response.json())
-              .then(data => {
-                console.log(data)
-                return data
-              })
-    }
+
+
     useEffect(() => {
         const fetchCommunities =  async() => {
             const com = await getCommunities()
@@ -79,26 +51,6 @@ export function Post () {
         }
         fetchCommunities()
     },[])
-/*
-    function getPost() {
-        return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
-            },
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-            return data
-            }
-            )
-            .catch(error => {
-                console.error('Error making API call:', error);
-              });
-      }
-      */
 
       useEffect(() => {
         const fetchPost = async () => {
@@ -121,23 +73,8 @@ export function Post () {
     }
 
     function handleDelete() {
-        return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
-            },
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-            history.push('/')
-            return data
-            }
-            )
-            .catch(error => {
-                console.error('Error making API call:', error);
-              });
+        deletePost(postId)
+        history.push('/')
     }
 
     return (

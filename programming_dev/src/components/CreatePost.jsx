@@ -2,6 +2,8 @@ import {useState,useEffect} from 'react'
 import { useHistory } from 'react-router-dom';
 import '../styles/layout.css'
 import "bootstrap/dist/css/bootstrap.min.css";
+import { getCommunities } from '../controllers/CtrlCommunities';
+import { createPost } from '../controllers/CtrlPost';
 
 export function CreatePost() {
     const history = useHistory();
@@ -22,19 +24,6 @@ export function CreatePost() {
     };
 
 
-    function getCommunities() {
-        return fetch('https://apiprogrammingdev.onrender.com/communities',
-        {method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-        },)
-              .then(response => response.json())
-              .then(data => {
-                console.log(data)
-                return data
-              })
-    }
     useEffect(() => {
         const fetchCommunities =  async() => {
             const com = await getCommunities()
@@ -45,25 +34,8 @@ export function CreatePost() {
 
     const handleSubmit = event => {
         event.preventDefault();
-        return fetch('https://apiprogrammingdev.onrender.com/posts',
-            {method: 'POST',
-            mode: 'cors', 
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
-            }
-            },)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                history.push('/');
-                return data
-            })
-            .catch(error => {
-                console.error('Error al enviar la solicitud:', error);
-              });
-         
+        createPost(formData)
+        history.push('/');
       };
 
     return (

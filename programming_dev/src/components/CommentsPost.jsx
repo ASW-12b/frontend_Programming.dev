@@ -7,30 +7,14 @@ import {useState,useEffect} from 'react'
 import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { RecursiveComment } from './RecursiveComment'
+import { getCommentsByPostId } from '../controllers/CtrlComments'
 
 export function CommentsPost(id) {
   let postId = id.id
     const [comments,setComments] = useState([])
-    function getComments(postId) {
-        return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/comments`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-            return data
-            }
-            )
-            .catch(error => {
-                console.error('Error making API call:', error);
-              });
-    }
     useEffect(() => {
         const fetchComments = async () => {
-            const com = await getComments(postId)
+            const com = await getCommentsByPostId(postId)
             setComments(com)
         }
         fetchComments()
