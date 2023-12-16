@@ -115,7 +115,8 @@ export function Index() {
             {selectedButton2 === 'Publicacions' ? (
             // Render posts
                 info.length > 0 ? (
-                    info.map(p => (
+                    info.map(p => {
+                        return (
                         <div key={p.pk} className="col-12 col-lg-6 offset-lg-3 mb-4">
                             <a style={{color:'black',textDecoration:'none'}} href={`/posts/${p.pk}`}>
                                 <h4><b>{p.fields.title}</b></h4>
@@ -157,7 +158,7 @@ export function Index() {
                             </div>
                             <hr className="my-3"></hr>
                         </div>
-                    ))
+                    )})
                 ) : (
                     <p>No hi ha cap posts per mostrar</p>
                 )

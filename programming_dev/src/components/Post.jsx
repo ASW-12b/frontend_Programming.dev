@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import {useState,useEffect} from 'react'
+import { useHistory } from 'react-router-dom';
 import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
@@ -10,10 +11,12 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { Dropdown } from 'react-bootstrap';
 import { CommentsPost } from './CommentsPost';
+import {getPost} from '../controllers/CtrlPost'
 
 
 
 export function Post () {
+    const history = useHistory()
     let {postId} = useParams()
     const [post,setPost] = useState(null)
     const [editing,setEditing] = useState(false)
@@ -76,7 +79,7 @@ export function Post () {
         }
         fetchCommunities()
     },[])
-
+/*
     function getPost() {
         return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
             method: 'GET',
@@ -95,10 +98,11 @@ export function Post () {
                 console.error('Error making API call:', error);
               });
       }
+      */
 
       useEffect(() => {
         const fetchPost = async () => {
-            const p = await getPost()
+            const p = await getPost(postId)
             setPost(p)
         }
         fetchPost()
@@ -115,6 +119,27 @@ export function Post () {
           });
         setEditing(true)
     }
+
+    function handleDelete() {
+        return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
+            },
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            history.push('/')
+            return data
+            }
+            )
+            .catch(error => {
+                console.error('Error making API call:', error);
+              });
+    }
+
     return (
         <>      
         {post && !editing ? (
@@ -155,7 +180,7 @@ export function Post () {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <Dropdown.Item onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                        <Dropdown.Item onClick={handleDelete}><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </div>

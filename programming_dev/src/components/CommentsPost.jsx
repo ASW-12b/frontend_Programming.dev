@@ -3,8 +3,6 @@ import { faArrowDown, faReply } from '@fortawesome/free-solid-svg-icons'
 import { faStar } from '@fortawesome/free-regular-svg-icons'
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
-import { Dropdown } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
 import {useState,useEffect} from 'react'
 import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -14,7 +12,7 @@ export function CommentsPost(id) {
   let postId = id.id
     const [comments,setComments] = useState([])
     function getComments(postId) {
-        return fetch(`https://apiprogrammingdev.onrender.com/comments/${postId}/list`, {
+        return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/comments`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
