@@ -35,7 +35,7 @@ export function CreatePost() {
     const handleSubmit = event => {
         event.preventDefault();
         createPost(formData)
-        history.push('/');
+        .then(history.push('/'));
       };
 
     return (

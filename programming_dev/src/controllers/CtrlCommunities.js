@@ -1,4 +1,4 @@
-export function getCommunities() {
+export async function getCommunities() {
     return fetch('https://apiprogrammingdev.onrender.com/communities',
     {method: 'GET',
     headers: {

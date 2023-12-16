@@ -1,4 +1,4 @@
-export function getPost(postId) {
+export async function getPost(postId) {
     return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
         method: 'GET',
         headers: {
@@ -17,7 +17,7 @@ export function getPost(postId) {
           });
   }
 
-export function editPost(formData,postId) {
+export async function editPost(formData,postId) {
   return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`,
             {method: 'PUT',
             mode: 'cors', 
@@ -38,7 +38,7 @@ export function editPost(formData,postId) {
 }
 
 
-export function deletePost(postId) {
+export async function deletePost(postId) {
   return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
             method: 'DELETE',
             headers: {
@@ -57,7 +57,7 @@ export function deletePost(postId) {
 }
 
 
-export function createPost(formData) {
+export async function createPost(formData) {
   return fetch('https://apiprogrammingdev.onrender.com/posts',
             {method: 'POST',
             mode: 'cors', 

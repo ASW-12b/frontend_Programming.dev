@@ -8,17 +8,36 @@ import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { RecursiveComment } from './RecursiveComment'
 import { getCommentsByPostId } from '../controllers/CtrlComments'
+import { deleteComment } from '../controllers/CtrlComment'
+import { Dropdown } from 'react-bootstrap';
 
 export function CommentsPost(id) {
   let postId = id.id
-    const [comments,setComments] = useState([])
-    useEffect(() => {
-        const fetchComments = async () => {
-            const com = await getCommentsByPostId(postId)
-            setComments(com)
-        }
-        fetchComments()
-    },[])
+  const [comments,setComments] = useState([])
+  const [deleted,setDeleted] = useState(false)
+  const [EditedComment,setEditedComment] = useState(null)
+  useEffect(() => {
+      const fetchComments = async () => {
+          const com = await getCommentsByPostId(postId)
+          setComments(com)
+      }
+      fetchComments()
+  },[deleted])
+
+  function handleDelete(commentId) {
+    deleteComment(commentId)
+    .then(() => {
+      setDeleted(!deleted);
+    })
+    .catch((error) => {
+      console.error('Error al eliminar el comentario:', error);
+    });
+  }
+
+  function handleEdit(commentId) {
+    setEditedComment(commentId)
+  }
+  
     return (
       <div id="comments_section" className='custom-margin2'>
         {comments.map(c => {
@@ -54,13 +73,15 @@ export function CommentsPost(id) {
                                     </button>
                             </div>
                                 <div className="dropdown col-auto">
-                                    <button className="btn btn-light dropdown-toggle p-0 text-dark" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        &#8942; 
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li><a className="dropdown-item" href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</a></li>
-                                        <li><a className="dropdown-item" href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</a></li>
-                                    </ul>
+                                  <Dropdown>
+                                      <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                          &#8942;
+                                      </Dropdown.Toggle>
+                                      <Dropdown.Menu>
+                                          <Dropdown.Item onClick={() => handleEdit(c.id)} ><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                          <Dropdown.Item onClick={() => handleDelete(c.id)} ><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                      </Dropdown.Menu>
+                                  </Dropdown>
                                 </div>
                         </div>
                         <div className="modal fade" id="exampleModal_{{c.id}}" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

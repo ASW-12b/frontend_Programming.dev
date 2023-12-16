@@ -40,7 +40,7 @@ export function Post () {
     const handleSubmit = event => {
         event.preventDefault();
         editPost(formData,postId)
-        setEditing(false)
+        .then(setEditing(false))
       };
 
 
@@ -74,7 +74,10 @@ export function Post () {
 
     function handleDelete() {
         deletePost(postId)
-        history.push('/')
+        .then(history.push('/'))
+        .catch((error) => {
+          console.error('Error al eliminar el post:', error);
+        });
     }
 
     return (
