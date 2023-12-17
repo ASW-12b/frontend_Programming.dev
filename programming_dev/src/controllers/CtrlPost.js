@@ -75,3 +75,22 @@ export async function createPost(formData) {
                 console.error('Error al enviar la solicitud:', error);
               });
 }
+
+export async function comment(content,postId) {
+  return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/comment`,
+            {method: 'POST',
+            mode: 'cors', 
+            body: JSON.stringify({'comentari': content}),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+            }
+            },)
+            .then(response => response.json())
+            .then(data => {
+                return data
+            })
+            .catch(error => {
+                console.error('Error al enviar la solicitud:', error);
+              });
+}

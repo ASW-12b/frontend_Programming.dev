@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { faArrowDown, faReply } from '@fortawesome/free-solid-svg-icons'
 import { faStar } from '@fortawesome/free-regular-svg-icons'
@@ -8,21 +10,31 @@ import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { RecursiveComment } from './RecursiveComment'
 import { getCommentsByPostId } from '../controllers/CtrlComments'
-import { deleteComment } from '../controllers/CtrlComment'
+import { deleteComment, editComment } from '../controllers/CtrlComment'
 import { Dropdown } from 'react-bootstrap';
 
-export function CommentsPost(id) {
-  let postId = id.id
+export function CommentsPost({id,refreshComments}) {
+  let postId = id
   const [comments,setComments] = useState([])
   const [deleted,setDeleted] = useState(false)
   const [EditedComment,setEditedComment] = useState(null)
+  const [content, setContent] = useState('');
+  const [replyModalId, setReplyModalId] = useState(null);
+
+  const handleReply = (commentId) => {
+    setReplyModalId(commentId); // Establecer el ID del comentario para mostrar el modal de respuesta
+  };
+
+  const handleCloseReplyModal = () => {
+    setReplyModalId(null); // Resetear el ID del comentario para ocultar el modal de respuesta
+  };
   useEffect(() => {
       const fetchComments = async () => {
           const com = await getCommentsByPostId(postId)
           setComments(com)
       }
       fetchComments()
-  },[deleted])
+  },[deleted,EditedComment,refreshComments])
 
   function handleDelete(commentId) {
     deleteComment(commentId)
@@ -34,9 +46,28 @@ export function CommentsPost(id) {
     });
   }
 
-  function handleEdit(commentId) {
+  function handleEdit(commentId,content) {
     setEditedComment(commentId)
+    setContent(content)
   }
+
+  function cancelEdit() {
+    setEditedComment(null)
+  }
+
+  const handleContentChange = (event) => {
+    setContent(event.target.value); // Actualizar el estado con el contenido del textarea
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    console.log(content)
+    editComment(EditedComment,content).then(() => {
+      setEditedComment(null)
+    })
+  }
+
+
   
     return (
       <div id="comments_section" className='custom-margin2'>
@@ -46,6 +77,18 @@ export function CommentsPost(id) {
               <ul className="list-group comments">
                 <li key={c.id} className="list-group-item comment">
                     <p><a href="" style={{textDecoration:'none'}}><span style={{color:'blue'}}>{ c.commentor }</span></a>   ·  {c.resta}</p>
+                    {c.id === EditedComment ? (
+                      <form method="POST" onSubmit={handleSubmit}>
+                        <textarea className="form-control" name="content" onChange={handleContentChange} value={content}></textarea>
+                        <br></br>
+                        <div className="col">
+                            <input type="submit" className="btn btn-success" value="Guardar"></input>
+                            <span style={{ marginRight: '8px' }}></span>
+                            <button className="btn btn-success mr-2"><a style={{textDecoration:'none', color:'white'}} onClick={cancelEdit}>Cancelar</a></button>
+                        </div>
+                      </form>
+                    ) : (
+                      <>
                         <p>{ c.content }</p>
                         <div className="row">
                             <div className="col-auto">
@@ -68,8 +111,8 @@ export function CommentsPost(id) {
                                     <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
                             </div>
                             <div className="col-auto">
-                                    <button type="button" className="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal_{{c.id}}">
-                                      <FontAwesomeIcon icon={faReply} />
+                                    <button type="button"  className="btn btn-light btn-sm">
+                                      <FontAwesomeIcon icon={faReply} onClick={()=> {handleReply(c.id)}}/>
                                     </button>
                             </div>
                                 <div className="dropdown col-auto">
@@ -78,37 +121,40 @@ export function CommentsPost(id) {
                                           &#8942;
                                       </Dropdown.Toggle>
                                       <Dropdown.Menu>
-                                          <Dropdown.Item onClick={() => handleEdit(c.id)} ><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                          <Dropdown.Item onClick={() => handleEdit(c.id,c.content)} ><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
                                           <Dropdown.Item onClick={() => handleDelete(c.id)} ><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
                                       </Dropdown.Menu>
                                   </Dropdown>
                                 </div>
-                        </div>
-                        <div className="modal fade" id="exampleModal_{{c.id}}" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div className="modal-dialog">
-                              <div className="modal-content">
-                                <div className="modal-header">
-                                  <h1 className="modal-title fs-5" id="exampleModalLabel">Reply</h1>
-                                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div className="modal-body">
-                                  <form action="" method="POST">
-                                        <textarea style={{borderRadius:'10px'}} name="reply_comment" cols="50" rows="6"></textarea>
-                                        <br></br>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" className="btn btn-success">Responder</button>
-                                        </div>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
                         </div>
                         {c.replies && c.replies.map(reply => (
                           <ul key={reply.id} className='list-group'>
                             <RecursiveComment key={reply.id} comment={reply} />
                           </ul>
                         ))}
+                        <div className="modal-fade" id={`modal_${c.id}`} tabIndex="-1" style={{ display: replyModalId === c.id ? 'block' : 'none' }}>
+                          <div className="modal-dialog">
+                              <div className="modal-content">
+                                  <div className="modal-header">
+                                    <h1 className="modal-title fs-5" id="exampleModalLabel">Reply</h1>
+                                    <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseReplyModal}></button>
+                                    </div>
+                                    <div className="modal-body">
+                                      <form action="" method="POST">
+                                              <textarea style={{borderRadius: '10px'}} name="reply_comment" cols="50" rows="6"></textarea>
+                                              <br></br>
+                                              <div className="modal-footer">
+                                                  <button type="button" className="btn btn-danger" onClick={handleCloseReplyModal}>Close</button>
+                                                  <span style={{marginRight: '8px'}}></span>
+                                                  <button type="submit" className="btn btn-success">Responder</button>
+                                              </div>
+                                      </form>
+                                    </div>
+                                </div>
+                              </div>
+                        </div> 
+                      </>
+                    )}
                       </li>
                     </ul>
                   </div>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useParams } from 'react-router-dom';
 import {useState,useEffect} from 'react'
 import { useHistory } from 'react-router-dom';
@@ -11,7 +12,7 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { Dropdown } from 'react-bootstrap';
 import { CommentsPost } from './CommentsPost';
-import {getPost,editPost, deletePost} from '../controllers/CtrlPost'
+import {getPost,editPost, deletePost, comment} from '../controllers/CtrlPost'
 import { getCommunities } from '../controllers/CtrlCommunities';
 
 
@@ -28,6 +29,8 @@ export function Post () {
         description: '',
         comunitat: '',
     });
+
+    const [newComment,setNewComment] = useState('')
 
     const handleInputChange = event => {
         const { name, value } = event.target;
@@ -80,6 +83,24 @@ export function Post () {
         });
     }
 
+    function refreshComments() {
+      console.log("refrescar")
+    }
+
+    const handleChange = (event) => {
+      event.preventDefault()
+      setNewComment(event.target.value)
+
+    }
+
+    const commentOnPost = (event) => {
+      event.preventDefault()
+      comment(newComment,postId).then(() => {
+        setNewComment('')
+        refreshComments()
+      })
+    }
+
     return (
         <>      
         {post && !editing ? (
@@ -126,10 +147,16 @@ export function Post () {
                             </div>
                         </div>
                         <hr className="my-3"></hr>
+                        <form method="POST" onSubmit={commentOnPost}>
+                            <textarea className="form-control" placeholder="Escriba aquí para comentar..." name="comentari" value={newComment} onChange={handleChange}></textarea>
+                            <br></br>
+                            <input type="submit" className="btn btn-success mt-2" value="Publicar"></input>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+        
         ) : (
             (post && editing) ? (
                 <div className="form-box">
@@ -224,7 +251,7 @@ export function Post () {
                 <p>Cargando.....</p>
             )
         )}
-        <CommentsPost id={postId}/>
+        <CommentsPost id={postId} refreshComments={refreshComments}/>
         </>
 
         
