@@ -1,35 +1,20 @@
-
-
-/* General margin classes */
+/* In your CSS file (styles.css) */
 .custom-margin {
   margin-left: 200px;
   margin-right: 200px;
 }
 
-.filtre {
-    margin-right: 10px;
-}
-
-.container {
-  display: flex;
-  justify-content: flex-start;
-  padding: 0;
-}
-
-/* Header style */
 h1 {
   font-size: 20px;
   margin-top: 10px;
 }
 
-/* Custom button style for the Dropdown Toggle */
 .custom-dropdown-button {
   background-color: white !important;
   color: black !important;
   border: 1px solid black !important; /* Add border to prevent default Bootstrap styles */
 }
 
-/* Custom styles for the Dropdown when hovered, active, or focused */
 .custom-dropdown-button:hover,
 .custom-dropdown-button:active,
 .custom-dropdown-button:focus {
@@ -37,48 +22,55 @@ h1 {
   color: black !important;
 }
 
-/* Custom styles for the Dropdown when active and its menu items */
 .custom-dropdown-button:active + .dropdown-menu .dropdown-item {
   background-color: white !important;
   color: black !important;
 }
 
-/* Custom styles for the Dropdown menu */
 .dropdown-menu {
   background-color: white !important;
   border: 1px solid black !important; /* Add border to prevent default Bootstrap styles */
 }
 
-/* Custom styles for the Dropdown menu items */
+.dropdown-item-light:active {
+  background-color: #D6D6D6 !important;
+  color: black !important;
+  border-color: black !important; /* Add border to selected item */
+}
+
 .dropdown-item {
   color: black !important;
 }
 
-/* Custom styles for the Dropdown menu items when hovered or active */
 .dropdown-item:hover,
 .dropdown-item:active {
   background-color: #f8f9fa !important; /* Hover color */
   color: black !important;
 }
 
-/* Additional styling for the primary button in options */
+.additional-options-container {
+  display: flex;
+  margin-top: 10px;
+}
+
+.additional-options-text {
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
 .additional-options-button-primary {
-  background-color: black !important;
+  margin-left: 10px;
+  border-start-end-radius: 5px;
+  background-color: white !important;
   border-color: black !important;
-  color: white !important;
+  color: black !important;
   cursor: pointer;
+  border-radius: 6px; /* Make the corners round */
+  font-size: 15px; /* Adjust the font size as needed */
 }
 
-/* Additional styling for the primary button in options when hovered, active, or focused */
-.additional-options-button-primary:hover,
-.additional-options-button-primary:active,
-.additional-options-button-primary:focus {
-  background-color: black !important;
+.additional-options-button-primary:hover {
+  background-color: #D6D6D6 !important;
   border-color: black !important;
-  color: white !important;
+  color: black !important;
 }
-
-
-
-
-

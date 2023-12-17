@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import '../styles/index.css';
+import '../styles/cercador.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown,faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { /*faTrashCan,faPenToSquare ,*/faStar,faComment} from '@fortawesome/free-regular-svg-icons'
@@ -112,7 +112,7 @@ export function Index() {
             <div className="container">
                 <div className="filtre">
                     <Dropdown onSelect={handleOrderChange}>
-                        <Dropdown.Toggle variant="light" id="order-dropdown">
+                        <Dropdown.Toggle id="order-dropdown" className="custom-dropdown-button">
                             {selectedOrder}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
@@ -123,13 +123,13 @@ export function Index() {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
-                <div className="filtre btn-group rareButton" role="group">
-                    <button className={`btn btn-secondary ${selectedButton === 'Subscrit' ? 'selected' : ''}`} onClick={() => handleButtonClick('Subscrit')}>Subscrit</button>
-                    <button className={`btn btn-secondary ${selectedButton === 'Tot' ? 'selected' : ''}`} onClick={() => handleButtonClick('Tot')}>Tot</button>
+                <div className="filtre btn-group" role="group">
+                    <button className={`btn btn-secondary rareButton ${selectedButton === 'Subscrit' ? 'selected' : ''}`} onClick={() => handleButtonClick('Subscrit')}>Subscrit</button>
+                    <button className={`btn btn-secondary rareButton ${selectedButton === 'Tot' ? 'selected' : ''}`} onClick={() => handleButtonClick('Tot')}>Tot</button>
                 </div>
-                <div className="filtre btn-group rareButton" role="group">
-                    <button className={`btn btn-secondary ${selectedButton2 === 'Publicacions' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Publicacions')}>Publicacions</button>
-                    <button className={`btn btn-secondary ${selectedButton2 === 'Comentaris' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Comentaris')}>Comentaris</button>
+                <div className="filtre btn-group" role="group">
+                    <button className={`btn btn-secondary rareButton ${selectedButton2 === 'Publicacions' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Publicacions')}>Publicacions</button>
+                    <button className={`btn btn-secondary rareButton ${selectedButton2 === 'Comentaris' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Comentaris')}>Comentaris</button>
                 </div>
             </div>
 

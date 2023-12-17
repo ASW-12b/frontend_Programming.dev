@@ -1,8 +1,8 @@
 import  { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/cercador.css';
 import '../styles/index.css';
+import '../styles/cercador.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
@@ -83,39 +83,21 @@ export function Search() {
         <div className="custom-margin">
             <h1>Buscar</h1>
             <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-button">
-                    {!selectedOrder ? 'Tipus Cerca' : formChoices.find((choice) => choice.value === selectedOrder)?.label}
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-button">{!selectedOrder ? 'Tipus Cerca' : formChoices.find((choice) => choice.value === selectedOrder)?.label}
                 </Dropdown.Toggle>
-
                 <Dropdown.Menu>
                     {formChoices.map((choice) => (
-                        <Dropdown.Item
-                            key={choice.value}
-                            onClick={() => handleOrderChange(choice.value)}
-                        >
+                        <Dropdown.Item key={choice.value} onClick={() => handleOrderChange(choice.value)}>
                             {choice.label}
                         </Dropdown.Item>
                     ))}
                 </Dropdown.Menu>
             </Dropdown>
-
             {showAdditionalOptions && (
                 <div className="additional-options-container">
                     <p className="additional-options-text">{additionalText}</p>
-                    <input
-                        className="additional-options-input"
-                        type="text"
-                        value={textBoxValue}
-                        onChange={(e) => setTextBoxValue(e.target.value)}
-                    />
-                    {/* Apply the new class for the additional button */}
-                    <button
-                        className="additional-options-button additional-options-button-primary"
-                        type="button"
-                        onClick={handleAdditionalButtonClick}
-                    >
-                        Buscar
-                    </button>
+                    <input className="additional-options-input" type="text" value={textBoxValue} onChange={(e) => setTextBoxValue(e.target.value)}/>
+                    <button className="additional-options-button additional-options-button-primary" type="button" onClick={handleAdditionalButtonClick}>Buscar</button>
                 </div>
             )}
 

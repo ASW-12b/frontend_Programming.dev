@@ -1,30 +1,115 @@
+
+
+/* General margin classes */
 .custom-margin {
-    margin-left: 200px;
-    margin-right: 200px;
+  margin-left: 200px;
+  margin-right: 200px;
 }
-.custom-margin2 {
-    margin-top: 20px;
 
-}
 .filtre {
-    margin-top: 20px;
+    margin-right: 10px;
 }
 
-/* CSS for button styling */
-.rareButton button {
-  color: black; /* Default text color */
-  background-color: white !important; /* Default background color, !important to override Bootstrap styles */
+.container {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0;
 }
 
-/* CSS for hover and selected button styling */
-.rareButton button.selected {
-  background-color: lightgrey !important; /* Change to your desired selected and hover background color */
-  color: black !important; /* Change to your desired selected and hover text color */
+/* Header style */
+h1 {
+  font-size: 20px;
+  margin-top: 10px;
 }
 
-.rareButton button:hover {
-    background-color: whitesmoke !important; /* Change to your desired selected and hover background color */
-    color: black !important; /* Change to your desired selected and hover text color */
+.custom-dropdown-button,
+.custom-dropdown-button-light {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid black !important; /* Add border to prevent default Bootstrap styles */
 }
+
+.custom-dropdown-button:hover,
+.custom-dropdown-button:active,
+.custom-dropdown-button:focus,
+.custom-dropdown-button-light:hover,
+.custom-dropdown-button-light:active,
+.custom-dropdown-button-light:focus {
+  background-color: white !important;
+  color: black !important;
+}
+
+.custom-dropdown-button:active + .dropdown-menu .dropdown-item,
+.custom-dropdown-button-light:active + .dropdown-menu .dropdown-item {
+  background-color: white !important;
+  color: black !important;
+}
+
+.dropdown-menu,
+.dropdown-menu-light {
+  background-color: white !important;
+  border: 1px solid black !important;
+}
+
+.dropdown-item,
+.dropdown-item-light {
+  color: black !important;
+  border: none !important; /* Remove default border */
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-item:active,
+.dropdown-item-light:hover,
+.dropdown-item-light:focus,
+.dropdown-item-light:active {
+  background-color: #D6D6D6 !important;
+  color: black !important;
+  border-color: black !important; /* Add border to selected item */
+}
+
+.dropdown-menu-light {
+  background-color: white !important;
+  border: 1px solid black !important;
+}
+
+.dropdown-item-light {
+  color: black !important;
+}
+
+.dropdown-item-light:hover,
+.dropdown-item-light:focus,
+.dropdown-item-light:active {
+  background-color: #D6D6D6 !important;
+  color: black !important;
+  border-color: black !important; /* Add border to selected item */
+}
+
+
+
+.rareButton {
+  background-color: white !important;
+  border-color: black !important;
+  color: black !important;
+  cursor: pointer;
+}
+
+.rareButton:hover,
+.rareButton:active,
+.rareButton:focus {
+  background-color: #D6D6D6 !important;
+  border-color: black !important;
+  color: black !important;
+}
+
+
+
+
+
+
+
+
+
+
 
 
