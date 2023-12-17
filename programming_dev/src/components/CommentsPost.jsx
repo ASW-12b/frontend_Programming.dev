@@ -10,7 +10,7 @@ import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { RecursiveComment } from './RecursiveComment'
 import { getCommentsByPostId } from '../controllers/CtrlComments'
-import { deleteComment, editComment } from '../controllers/CtrlComment'
+import { deleteComment, editComment, replyComment } from '../controllers/CtrlComment'
 import { Dropdown } from 'react-bootstrap';
 
 export function CommentsPost({id,refreshComments}) {
@@ -20,6 +20,11 @@ export function CommentsPost({id,refreshComments}) {
   const [EditedComment,setEditedComment] = useState(null)
   const [content, setContent] = useState('');
   const [replyModalId, setReplyModalId] = useState(null);
+  const [reply,setReply] = useState('')
+
+  function refreshSubcom() {
+    console.log('refresh')
+  }
 
   const handleReply = (commentId) => {
     setReplyModalId(commentId); // Establecer el ID del comentario para mostrar el modal de respuesta
@@ -34,7 +39,7 @@ export function CommentsPost({id,refreshComments}) {
           setComments(com)
       }
       fetchComments()
-  },[deleted,EditedComment,refreshComments])
+  },[deleted,EditedComment,refreshComments,refreshSubcom])
 
   function handleDelete(commentId) {
     deleteComment(commentId)
@@ -56,7 +61,7 @@ export function CommentsPost({id,refreshComments}) {
   }
 
   const handleContentChange = (event) => {
-    setContent(event.target.value); // Actualizar el estado con el contenido del textarea
+    setContent(event.target.value); 
   };
 
   const handleSubmit = (event) => {
@@ -67,6 +72,20 @@ export function CommentsPost({id,refreshComments}) {
     })
   }
 
+  const handleSubmitReply = (commentId,event) => {
+    event.preventDefault()
+    replyComment(commentId,reply).then(() => {
+      setReply('')
+      setReplyModalId(null)
+      refreshSubcom()
+    })
+  }
+
+
+  const handleChangeReply = (event) => {
+    event.preventDefault();
+    setReply(event.target.value)
+  }
 
   
     return (
@@ -76,7 +95,8 @@ export function CommentsPost({id,refreshComments}) {
             <div key={c.id}>
               <ul className="list-group comments">
                 <li key={c.id} className="list-group-item comment">
-                    <p><a href="" style={{textDecoration:'none'}}><span style={{color:'blue'}}>{ c.commentor }</span></a>   ·  {c.resta}</p>
+                    <a href="" style={{textDecoration:'none'}}><span style={{color:'blue'}}>{ c.commentor }</span></a> a <a href="" style={{textDecoration: 'none'}}><span
+                                style={{color: 'orange'}}>{ c.community }</span></a> 
                     {c.id === EditedComment ? (
                       <form method="POST" onSubmit={handleSubmit}>
                         <textarea className="form-control" name="content" onChange={handleContentChange} value={content}></textarea>
@@ -111,8 +131,8 @@ export function CommentsPost({id,refreshComments}) {
                                     <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
                             </div>
                             <div className="col-auto">
-                                    <button type="button"  className="btn btn-light btn-sm">
-                                      <FontAwesomeIcon icon={faReply} onClick={()=> {handleReply(c.id)}}/>
+                                    <button type="button"  className="btn btn-light btn-sm" onClick={()=> {handleReply(c.id)}}>
+                                      <FontAwesomeIcon icon={faReply} />
                                     </button>
                             </div>
                                 <div className="dropdown col-auto">
@@ -140,8 +160,8 @@ export function CommentsPost({id,refreshComments}) {
                                     <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseReplyModal}></button>
                                     </div>
                                     <div className="modal-body">
-                                      <form action="" method="POST">
-                                              <textarea style={{borderRadius: '10px'}} name="reply_comment" cols="50" rows="6"></textarea>
+                                      <form onSubmit={(event) => {handleSubmitReply(c.id,event)}} method="POST">
+                                              <textarea onChange={handleChangeReply} style={{borderRadius: '10px'}} name="reply_comment" cols="50" rows="6" value={reply}></textarea>
                                               <br></br>
                                               <div className="modal-footer">
                                                   <button type="button" className="btn btn-danger" onClick={handleCloseReplyModal}>Close</button>
