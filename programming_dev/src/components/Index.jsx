@@ -5,7 +5,7 @@ import { faArrowDown,faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { /*faTrashCan,faPenToSquare ,*/faStar,faComment} from '@fortawesome/free-regular-svg-icons'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown } from 'react-bootstrap';
-import {getInfo} from '../controllers/CtrlPosts'
+import {getInfo} from '../controllers/CtrlIndex'
 
 export function Index() {
     const [info, setInfo] = useState([]);
