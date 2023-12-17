@@ -1,7 +1,6 @@
-import  { useState } from 'react';
+import {useEffect, useState} from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/index.css';
 import '../styles/cercador.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,169 +11,133 @@ import { faStar } from '@fortawesome/free-regular-svg-icons'
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import "bootstrap/dist/css/bootstrap.min.css";
+import {getInfo} from "../controllers/CtrlSearch.js";
 
 
 export function Search() {
-    const [selectedOrder, setSelectedOrder] = useState('');
-    const [showAdditionalOptions, setShowAdditionalOptions] = useState(false);
-    const [additionalText, setAdditionalText] = useState('');
+    const [selectedOrder, setSelectedOrder] = useState('Publicacions');
+    const [additionalText, setAdditionalText] = useState('Introdueixi un títol pel qual cercar');
     const [textBoxValue, setTextBoxValue] = useState('');
-    const [posts, setPosts] = useState([]);
-    const [comments, setComments] = useState([]);
-    const formChoices = [
-        {label: 'Publicacions', value: 'cercapub'},
-        {label: 'Comentaris', value: 'cercacom'},
-    ];
+    const [info, setInfo] = useState([]);
+    const [messages, setMessages] = useState([]);
 
-    const handleOrderChange = (value) => {
-        setSelectedOrder(value);
-        setShowAdditionalOptions(true);
 
-        // Customize additional text and API call based on the selected option
-        if (value === 'cercapub') {
+    const handleOrderChange = (eventKey) => {
+        setSelectedOrder(eventKey);
+        setInfo([]);
+        setMessages([])
+        setTextBoxValue([])
+        if (eventKey === 'Publicacions') {
             setAdditionalText('Introdueixi un títol pel qual cercar');
-        } else if (value === 'cercacom') {
+        } else if (eventKey === 'Comentaris') {
             setAdditionalText('Introdueixi un comentari pel qual cercar');
         }
     };
 
-    const handleAdditionalButtonClick = () => {
-        // Handle button click based on the selected option
-        if (selectedOrder === 'cercapub') {
-            // Perform API call for Publicacions with the text box value
-            fetch(`https://apiprogrammingdev.onrender.com/posts_search?titol=${textBoxValue}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the API response for Publicacions
-                    console.log('Posts API Response:', data, textBoxValue);
-                    setPosts(data); // Assuming the API response is an array of posts
-                })
-                .catch(error => {
-                    // Handle error
-                    console.error('Error making API call:', error);
-                });
-        } else if (selectedOrder === 'cercacom') {
-            // Perform API call for Comentaris with the text box value
-            fetch(`https://apiprogrammingdev.onrender.com/comments_search?comentari=${textBoxValue}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the API response for Comentaris
-                    console.log('Comments API Response:', data);
-                    setComments(data); // Assuming the API response is an array of comments
-                })
-                .catch(error => {
-                    // Handle error
-                    console.error('Error making API call:', error);
-                });
-        }
+
+     const handleAdditionalButtonClick = () => {
+        getInfo(selectedOrder, textBoxValue)
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    // Handle the error as needed, e.g., set an error message state
+                    setMessages([result.message]);
+                    setInfo([]); // Clear the data state in case of an error
+                } else {
+                    setInfo(result.data);
+                    setMessages([]); // Clear the error message state on success
+                }
+            });
     };
+
+     const renderMessage = (message, index) => (
+    <div key={index} className="alert alert-danger" role="alert">
+      {message}
+    </div>
+  );
+
+  const renderComment = (c, index) => (
+  <div key={index}>
+    <a>{c.content}</a>
+  </div>
+);
+
+   const renderPost = (p, index) => (
+       <div key={index} className="col-12 col-lg-6 offset-lg-3 mb-4 filtre">
+               <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${p.pk}`}>
+                   <h4><b>{p.fields && p.fields.title}</b></h4>
+               </a>
+               <div className="row px-4">
+                   <div className="col-auto mr-2">
+                       <a href="" className="link"><FontAwesomeIcon icon={faComment}/></a>
+                   </div>
+                   <div className="col-auto mr-2">
+                       <p>{p.fields && p.fields.numComments}</p>
+                   </div>
+                   <div className="col-auto mr-2">
+                       <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
+                   </div>
+                   <div className="col-auto">
+                       <p className="mr-2">
+                           {p.fields && p.fields.totalVotes}
+                       </p>
+                   </div>
+                   <div className="col-auto mr-2">
+                       <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
+                   </div>
+                   <div className="col-auto mr-2">
+                       <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
+                   </div>
+                   {/*
+                                <div className="dropdown col-auto">
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                            &#8942;
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item href={`/posts/${p.pk}`}><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </div>
+                    */}
+               </div>
+               <hr className="my-3"></hr>
+       </div>
+   );
 
     return (
         <div className="custom-margin">
             <h1>Buscar</h1>
-            <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-button">{!selectedOrder ? 'Tipus Cerca' : formChoices.find((choice) => choice.value === selectedOrder)?.label}
+            <Dropdown onSelect={handleOrderChange}>
+                <Dropdown.Toggle id="order-dropdown" className="custom-dropdown-button">
+                    {selectedOrder}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {formChoices.map((choice) => (
-                        <Dropdown.Item key={choice.value} onClick={() => handleOrderChange(choice.value)}>
-                            {choice.label}
-                        </Dropdown.Item>
-                    ))}
+                    <Dropdown.Item eventKey="Publicacions">Publicacions</Dropdown.Item>
+                    <Dropdown.Item eventKey="Comentaris">Comentaris</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
-            {showAdditionalOptions && (
-                <div className="additional-options-container">
+            <div className="additional-options-container">
                     <p className="additional-options-text">{additionalText}</p>
                     <input className="additional-options-input" type="text" value={textBoxValue} onChange={(e) => setTextBoxValue(e.target.value)}/>
                     <button className="additional-options-button additional-options-button-primary" type="button" onClick={handleAdditionalButtonClick}>Buscar</button>
                 </div>
+
+            {/* Display messages or posts or comments */}
+            {messages.length > 0 ? (
+                messages.map((message, index) => renderMessage(message, index))
+            ) : (
+                <>
+                    {selectedOrder === 'Publicacions' ? (
+                            info.map((p, index) => renderPost(p, index))
+                    ) : (
+                        info.map((c, index) => renderComment(c, index))
+                    )}
+                </>
             )}
-
-            {/* Display posts from the API response */}
-            <div className='form-box'>
-                {selectedOrder === 'cercapub' && (
-                    <>
-                        {posts.length > 0 ? (
-                            posts.map(p => {
-                                return (
-                                    <div key={p.pk} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                                        <a style={{color: 'black', textDecoration: 'none'}} href="#">
-                                            <h4><b>{p.fields.title}</b></h4>
-                                        </a>
-                                        <div className="row px-4">
-                                            <div className="col-auto mr-2">
-                                                <a href="" className="link"><FontAwesomeIcon icon={faComment}/></a>
-                                            </div>
-                                            <div className="col-auto mr-2">
-                                                <p>{p.fields.numComments}</p>
-                                            </div>
-                                            <div className="col-auto mr-2">
-                                                <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
-                                            </div>
-                                            <div className="col-auto">
-                                                <p className="mr-2">
-                                                    {p.fields.totalVotes}
-                                                </p>
-                                            </div>
-                                            <div className="col-auto mr-2">
-                                                <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
-                                            </div>
-                                            <div className="col-auto mr-2">
-                                                <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
-                                            </div>
-                                            <div className="dropdown col-auto">
-                                                <Dropdown>
-                                                    <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                        &#8942;
-                                                    </Dropdown.Toggle>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Item href=""><FontAwesomeIcon
-                                                            icon={faPenToSquare}/>Editar</Dropdown.Item>
-                                                        <Dropdown.Item href=""><FontAwesomeIcon
-                                                            icon={faTrashCan}/>Eliminar</Dropdown.Item>
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </div>
-                                        </div>
-                                        <hr className="my-3"></hr>
-                                    </div>
-                                )
-                            })
-                        ) : (
-                            <p>No hi cap post pel titol introduit</p>
-                        )}
-                    </>
-                )}
-                {selectedOrder === 'cercacom' && (
-                    <>
-                        {comments.length > 0 ? (
-                            comments.map(c => {
-                                return (
-                                    <div key={c.id}>
-                                        <a>{c.content}</a>
-                                    </div>
-                                )
-                            })
-                        ) : (
-                            <p>No hi comentari pel text introduit</p>
-                        )}
-                    </>
-                )}
-                </div>
-            </div>
+        </div>
     )
-
 }
 
 

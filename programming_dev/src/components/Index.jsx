@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import '../styles/cercador.css';
+import '../styles/index.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown,faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { /*faTrashCan,faPenToSquare ,*/faStar,faComment} from '@fortawesome/free-regular-svg-icons'
@@ -25,7 +25,6 @@ export function Index() {
                     setMessages([result.message]);
                     setInfo([]); // Clear the data state in case of an error
                 } else {
-                    console.log('PepeInfo:', result.data);
                     setInfo(result.data);
                     setMessages([]); // Clear the error message state on success
                 }
