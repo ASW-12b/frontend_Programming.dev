@@ -51,7 +51,7 @@ export function Search() {
     };
 
      const renderMessage = (message, index) => (
-    <div key={index} className="alert alert-danger" role="alert">
+    <div key={index} className="alert alert-danger margin-t" role="alert">
       {message}
     </div>
   );

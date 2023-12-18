@@ -26,6 +26,10 @@ h1 {
   color: black !important;
 }
 
+.margin-t {
+  margin-top: 10px
+}
+
 .dropdown-menu {
   background-color: white !important;
   border: 1px solid black !important; /* Add border to prevent default Bootstrap styles */
