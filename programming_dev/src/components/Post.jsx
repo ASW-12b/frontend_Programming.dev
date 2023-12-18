@@ -12,7 +12,7 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { Dropdown } from 'react-bootstrap';
 import { CommentsPost } from './CommentsPost';
-import {getPost,editPost, deletePost, comment} from '../controllers/CtrlPost'
+import {getPost,editPost, deletePost, comment,getVotePost, votePost} from '../controllers/CtrlPost'
 import { getCommunities } from '../controllers/CtrlCommunities';
 
 
@@ -23,6 +23,7 @@ export function Post () {
     const [post,setPost] = useState(null)
     const [editing,setEditing] = useState(false)
     const [communities,setCommunities] = useState([])
+    const [vote,setVote] = useState({})
     const [formData, setFormData] = useState({
         url: '',
         title: '',
@@ -61,7 +62,7 @@ export function Post () {
             setPost(p)
         }
         fetchPost()
-      },[editing])
+      },[editing,vote])
 
       
 
@@ -100,6 +101,24 @@ export function Post () {
         refreshComments()
       })
     }
+    const handleClickVote = async (type) => {
+      await votePost(postId,type)
+      const v = await getVotePost(postId);
+      setVote(v);
+    }
+    useEffect(() => {
+      const fetchVote = async () => {
+        const v = await getVotePost(postId)
+        console.log(v)
+        setVote(v)
+      }
+      fetchVote()
+    },[])
+
+
+
+    
+    
 
     return (
         <>      
@@ -121,7 +140,7 @@ export function Post () {
                                 <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
                             </div>
                             <div className="col-auto mr-2">
-                                <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                              <FontAwesomeIcon onClick={() => {handleClickVote('positive')}} icon={faArrowUp} style={{color: (vote && vote.type === 'positive') ? "#ff0000" : "inherit"}} />
                             </div>
                             <div className="col-auto">
                                 <p className="mr-2">
@@ -129,7 +148,7 @@ export function Post () {
                                 </p>
                             </div>
                             <div className="col-auto mr-2">
-                                <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                <FontAwesomeIcon onClick={() => {handleClickVote('negative')}} icon={faArrowDown} style={{color: (vote && vote.type === 'negative') ? "#ff0000" : "inherit"}} />
                             </div>
                             <div className="col-auto mr-2">
                                 <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>

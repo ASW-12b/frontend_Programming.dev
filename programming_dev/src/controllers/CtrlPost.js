@@ -94,3 +94,41 @@ export async function comment(content,postId) {
                 console.error('Error al enviar la solicitud:', error);
               });
 }
+
+export async function getVotePost(postId) {
+  return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/votes/posts/${postId}`,
+            {method: 'GET',
+            mode: 'cors', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+            }
+            },)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) return {}
+                return data
+            })
+            .catch(error => {
+                console.error('Error al enviar la solicitud:', error);
+              });
+}
+
+export async function votePost(postId,type) {
+  return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/vote`,
+            {method: 'POST',
+            mode: 'cors', 
+            body: JSON.stringify({'typeV': type}),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+            }
+            },)
+            .then(response => response.json())
+            .then(data => {
+                return data
+            })
+            .catch(error => {
+                console.error('Error al enviar la solicitud:', error);
+              });
+}

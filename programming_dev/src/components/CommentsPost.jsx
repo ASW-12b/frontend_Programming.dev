@@ -12,6 +12,7 @@ import { RecursiveComment } from './RecursiveComment'
 import { getCommentsByPostId } from '../controllers/CtrlComments'
 import { deleteComment, editComment, replyComment } from '../controllers/CtrlComment'
 import { Dropdown } from 'react-bootstrap';
+//import { getVotePost } from '../controllers/CtrlPost'
 
 export function CommentsPost({id,refreshComments}) {
   let postId = id
@@ -21,6 +22,7 @@ export function CommentsPost({id,refreshComments}) {
   const [content, setContent] = useState('');
   const [replyModalId, setReplyModalId] = useState(null);
   const [reply,setReply] = useState('')
+  //const [vote,setVote] = useState({})
 
   function refreshSubcom() {
     console.log('refresh')
@@ -39,7 +41,10 @@ export function CommentsPost({id,refreshComments}) {
           setComments(com)
       }
       fetchComments()
+      
   },[deleted,EditedComment,refreshComments,refreshSubcom])
+
+  
 
   function handleDelete(commentId) {
     deleteComment(commentId)
