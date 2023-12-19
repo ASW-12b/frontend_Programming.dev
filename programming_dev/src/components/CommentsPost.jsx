@@ -12,7 +12,7 @@ import { RecursiveComment } from './RecursiveComment'
 import { getCommentsByPostId } from '../controllers/CtrlComments'
 import { deleteComment, editComment, replyComment } from '../controllers/CtrlComment'
 import { Dropdown } from 'react-bootstrap';
-//import { getVotePost } from '../controllers/CtrlPost'
+import { getVotesComment,voteComment } from '../controllers/CtrlComment'
 
 export function CommentsPost({id,refreshComments}) {
   let postId = id
@@ -22,7 +22,7 @@ export function CommentsPost({id,refreshComments}) {
   const [content, setContent] = useState('');
   const [replyModalId, setReplyModalId] = useState(null);
   const [reply,setReply] = useState('')
-  //const [vote,setVote] = useState({})
+  const [votes,setVotes] = useState({})
 
   function refreshSubcom() {
     console.log('refresh')
@@ -42,7 +42,7 @@ export function CommentsPost({id,refreshComments}) {
       }
       fetchComments()
       
-  },[deleted,EditedComment,refreshComments,refreshSubcom])
+  },[deleted,EditedComment,refreshComments,refreshSubcom,votes])
 
   
 
@@ -92,6 +92,21 @@ export function CommentsPost({id,refreshComments}) {
     setReply(event.target.value)
   }
 
+  const handleClickVote = async (type,commentId) => {
+    await voteComment(commentId,type)
+    const v = await getVotesComment();
+    setVotes(v);
+  }
+
+  useEffect(() => {
+    const fetchVotes = async () => {
+      const v = await getVotesComment()
+      console.log(v)
+      setVotes(v)
+    }
+    fetchVotes()
+  },[])
+
   
     return (
       <div id="comments_section" className='custom-margin2'>
@@ -117,7 +132,7 @@ export function CommentsPost({id,refreshComments}) {
                         <p>{ c.content }</p>
                         <div className="row">
                             <div className="col-auto">
-                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
+                                    <FontAwesomeIcon onClick={() => {handleClickVote('positive',c.id)}} icon={faArrowUp} style={{color: (votes[c.id] && votes[c.id].type === 'positive') ? "#ff0000" : "inherit"}}/>
                             </div>
                             <div className="col-auto">
                                 <p className="mr-2">
@@ -125,7 +140,7 @@ export function CommentsPost({id,refreshComments}) {
                                 </p>
                             </div>
                             <div className="col-auto">
-                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
+                                    <FontAwesomeIcon onClick={() => {handleClickVote('negative',c.id)}} icon={faArrowDown} style={{color: (votes[c.id] && votes[c.id].type === 'negative') ? "#ff0000" : "inherit"}}/>
                             </div>
                             <div className="col-auto">
                                 <p className="mr-2">

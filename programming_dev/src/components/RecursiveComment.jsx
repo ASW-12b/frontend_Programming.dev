@@ -7,8 +7,9 @@ import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown } from 'react-bootstrap';
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import { deleteComment, editComment, replyComment } from '../controllers/CtrlComment'
+import { getVotesComment,voteComment } from '../controllers/CtrlComment'
 
 
 export function RecursiveComment({comment}) {
@@ -18,6 +19,7 @@ export function RecursiveComment({comment}) {
     const [content, setContent] = useState('');
     const [replyModalId, setReplyModalId] = useState(null);
     const [reply,setReply] = useState('')
+    const [votes,setVotes] = useState({})
 
     const handleReply = (commentId) => {
       setReplyModalId(commentId); // Establecer el ID del comentario para mostrar el modal de respuesta
@@ -72,6 +74,21 @@ export function RecursiveComment({comment}) {
       setReply(event.target.value)
     }
 
+    const handleClickVote = async (type,commentId) => {
+      await voteComment(commentId,type)
+      const v = await getVotesComment();
+      setVotes(v);
+    }
+  
+    useEffect(() => {
+      const fetchVotes = async () => {
+        const v = await getVotesComment()
+        console.log(v)
+        setVotes(v)
+      }
+      fetchVotes()
+    },[votes])
+
 
     return (
         <div key={c.id}>
@@ -94,7 +111,7 @@ export function RecursiveComment({comment}) {
                         <p>{ c.content }</p>
                         <div className="row">
                             <div className="col-auto">
-                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
+                                    <FontAwesomeIcon onClick={() => {handleClickVote('positive',c.id)}} style={{color: (votes[c.id] && votes[c.id].type === 'positive') ? "#ff0000" : "inherit"}} icon={faArrowUp}/>
                             </div>
                             <div className="col-auto">
                                 <p className="mr-2">
@@ -102,7 +119,7 @@ export function RecursiveComment({comment}) {
                                 </p>
                             </div>
                             <div className="col-auto">
-                                    <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
+                                    <FontAwesomeIcon onClick={() => {handleClickVote('negative',c.id)}} style={{color: (votes[c.id] && votes[c.id].type === 'negative') ? "#ff0000" : "inherit"}} icon={faArrowDown}/>
                             </div>
                             <div className="col-auto">
                                 <p className="mr-2">
