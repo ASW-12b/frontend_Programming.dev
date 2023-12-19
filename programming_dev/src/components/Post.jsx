@@ -12,7 +12,7 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { Dropdown } from 'react-bootstrap';
 import { CommentsPost } from './CommentsPost';
-import {getPost,editPost, deletePost, comment,getVotePost, votePost} from '../controllers/CtrlPost'
+import {getPost,editPost, deletePost, comment,getVotePost, votePost,getLikePost,likePost} from '../controllers/CtrlPost'
 import { getCommunities } from '../controllers/CtrlCommunities';
 
 
@@ -24,6 +24,7 @@ export function Post () {
     const [editing,setEditing] = useState(false)
     const [communities,setCommunities] = useState([])
     const [vote,setVote] = useState({})
+    const [like, setLike] = useState(false); 
     const [formData, setFormData] = useState({
         url: '',
         title: '',
@@ -115,6 +116,20 @@ export function Post () {
       fetchVote()
     },[])
 
+    const handleClickLike = async () => {
+      await likePost(postId)
+      const v = await getLikePost(postId);
+      setLike(v);
+    }
+    useEffect(() => {
+      const fetchLike = async () => {
+        const v = await getLikePost(postId)
+        console.log(v)
+        setLike(v)
+      }
+      fetchLike()
+    },[])
+
 
 
     
@@ -151,7 +166,7 @@ export function Post () {
                                 <FontAwesomeIcon onClick={() => {handleClickVote('negative')}} icon={faArrowDown} style={{color: (vote && vote.type === 'negative') ? "#ff0000" : "inherit"}} />
                             </div>
                             <div className="col-auto mr-2">
-                                <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                <FontAwesomeIcon onClick={() => {handleClickLike()}} icon={faStar} style={{color: like ? "#ffff00" : "inherit"}} />
                             </div>
                             <div className="dropdown col-auto">
                                 <Dropdown>

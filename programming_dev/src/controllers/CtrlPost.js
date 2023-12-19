@@ -132,3 +132,41 @@ export async function votePost(postId,type) {
                 console.error('Error al enviar la solicitud:', error);
               });
 }
+
+export async function getLikePost(postId) {
+  return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/likes/posts/${postId}`,
+            {method: 'GET',
+            mode: 'cors', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+            }
+            },)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) return false
+                return true
+            })
+            .catch(error => {
+                console.error('Error al enviar la solicitud:', error);
+              });
+}
+
+export async function likePost(postId) {
+  return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/like`,
+            {method: 'POST',
+            mode: 'cors', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+            }
+            },)
+            .then(response => response.json())
+            .then(data => {
+                return data
+            })
+            .catch(error => {
+                console.error('Error al enviar la solicitud:', error);
+              });
+}
+

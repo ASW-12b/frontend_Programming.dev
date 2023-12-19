@@ -12,7 +12,7 @@ import { RecursiveComment } from './RecursiveComment'
 import { getCommentsByPostId } from '../controllers/CtrlComments'
 import { deleteComment, editComment, replyComment } from '../controllers/CtrlComment'
 import { Dropdown } from 'react-bootstrap';
-import { getVotesComment,voteComment } from '../controllers/CtrlComment'
+import { getVotesComment,voteComment,LikeComment,getLikesComment } from '../controllers/CtrlComment'
 
 export function CommentsPost({id,refreshComments}) {
   let postId = id
@@ -23,6 +23,7 @@ export function CommentsPost({id,refreshComments}) {
   const [replyModalId, setReplyModalId] = useState(null);
   const [reply,setReply] = useState('')
   const [votes,setVotes] = useState({})
+  const [likes, setLikes] = useState({})
 
   function refreshSubcom() {
     console.log('refresh')
@@ -42,7 +43,7 @@ export function CommentsPost({id,refreshComments}) {
       }
       fetchComments()
       
-  },[deleted,EditedComment,refreshComments,refreshSubcom,votes])
+  },[deleted,EditedComment,refreshComments,refreshSubcom])
 
   
 
@@ -105,6 +106,22 @@ export function CommentsPost({id,refreshComments}) {
       setVotes(v)
     }
     fetchVotes()
+  },[])
+
+
+  const handleClickLike = async (commentId) => {
+    await LikeComment(commentId)
+    const v = await getLikesComment();
+    setVotes(v);
+  }
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      const v = await getLikesComment()
+      console.log(v)
+      setVotes(v)
+    }
+    fetchLikes()
   },[])
 
   
