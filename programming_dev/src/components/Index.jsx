@@ -9,9 +9,9 @@ import {getInfo} from '../controllers/CtrlIndex'
 
 export function Index() {
     const [info, setInfo] = useState([]);
-    const [selectedOrder, setSelectedOrder] = useState('Nou'); // Default value
-    const [selectedButton, setSelectedButton] = useState('Tot'); // Default value
-    const [selectedButton2, setSelectedButton2] = useState('Publicacions'); // Default value
+    const [selectedOrder, setSelectedOrder] = useState('Nou');
+    const [selectedButton, setSelectedButton] = useState('Tot');
+    const [selectedButton2, setSelectedButton2] = useState('Publicacions');
     const [messages, setMessages] = useState([]);
 
 
