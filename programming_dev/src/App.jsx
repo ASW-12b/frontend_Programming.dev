@@ -8,27 +8,28 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { Dropdown } from 'react-bootstrap';
 
 
 function App() {
-    const [globalToken, setGlobalToken] = useState('');
-    const [selectedUser, setSelectedUser] = useState('');
 
-
+    const setTokenAndUser = (token, user) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('selectedUser', user);
+    };
     const handleUserSelection = (user) => {
         let token = '';
-        if (user === 'fernando33') {
+        if (user === 'adrian.contreras.martin_v2') {
             token = 'f54b3557-06d6-4dcb-b95f-d297fd821738';
         } else if (user === 'adrian.contreras.martin') {
             token = '3ed9e367-519d-4435-8b35-c15d829e528f';
         }
-        setGlobalToken(token);
-        setSelectedUser(user);
-    }
+        setTokenAndUser(token, user);
+    };
 
-  return (
+
+    return (
     <>
       <div className="custom-margin">
             <nav className="navbar navbar-expand-lg navbar-light">
@@ -48,12 +49,12 @@ function App() {
 
                             {/* Dropdown Menu */}
                             <Dropdown.Menu aria-labelledby="userDropdown">
-                                <Dropdown.Item style={{ backgroundColor: selectedUser === 'fernando33' ? '#c4c4c4' : 'transparent' }}
-                                               onClick={() => handleUserSelection('fernando33')}>fernando33</Dropdown.Item>
-                                <Dropdown.Item style={{ backgroundColor: selectedUser === 'adrian.contreras.martin' ? '#c4c4c4' : 'transparent' }}
+                                <Dropdown.Item style={{ backgroundColor: localStorage.getItem('selectedUser') === 'adrian.contreras.martin_v2' ? '#c4c4c4' : 'transparent' }}
+                                               onClick={() => handleUserSelection('adrian.contreras.martin_v2')}>adrian.contreras.martin_v2</Dropdown.Item>
+                                <Dropdown.Item style={{ backgroundColor: localStorage.getItem('selectedUser') === 'adrian.contreras.martin' ? '#c4c4c4' : 'transparent' }}
                                                onClick={() => handleUserSelection('adrian.contreras.martin')}>adrian.contreras.martin</Dropdown.Item>
-                                {selectedUser && (
-                                    <Dropdown.Item href={`/user/${selectedUser}`}>
+                                {localStorage.getItem('selectedUser') && (
+                                    <Dropdown.Item href={`/user/${localStorage.getItem('selectedUser')}`}>
                                         El meu perfil
                                     </Dropdown.Item>
                                 )}
@@ -75,4 +76,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

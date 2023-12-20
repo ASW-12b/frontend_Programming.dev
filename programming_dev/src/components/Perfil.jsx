@@ -11,12 +11,12 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { faEdit } from '@fortawesome/free-regular-svg-icons'
 import { Dropdown } from 'react-bootstrap';
-import EditPerfil from "./EditPerfil.jsx";
+import EditPerfil from "./EditPerfil";
 
 
 export function Perfil () {
-    let {username} = useParams()
-    const [user, setUser] = useState(null)
+    let {username} = useParams();
+    const [user, setUser] = useState(null);
     const [userPosts, setUserPosts] = useState([]);
     const [userComments, setUserComments] = useState([]);
     const [userDesatsC, setUserDesatsC] = useState([]);
@@ -24,6 +24,14 @@ export function Perfil () {
     const [selectedOrder, setSelectedOrder] = useState('Nou'); // Default value
     const [selectedButton, setSelectedButton] = useState('Publicacions'); // Default value
     const [editMode, setEditMode] = useState(false);
+
+    const getTokenAndUser = () => {
+        const token = localStorage.getItem('token');
+        const selectedUser = localStorage.getItem('selectedUser');
+        return { token, selectedUser };
+    };
+
+    const { token, selectedUser } = getTokenAndUser();
 
     function getUserInfo() {
         return fetch(`https://apiprogrammingdev.onrender.com/user/${username}`, {
@@ -196,7 +204,6 @@ export function Perfil () {
                                     <div className="profile-stats">
                                         <p><strong>{user.num_publicacions}</strong> Publicacions</p>
                                         <p><strong>{user.num_comentaris}</strong> Comentaris</p>
-                                        <p><strong>API: {user.api_key}</strong></p>
                                     </div>
                                 </div>
                             </div>
@@ -222,9 +229,12 @@ export function Perfil () {
                                 <button className={`btn btn-secondary ${selectedButton === 'Comentaris' ? 'selected' : ''}`}
                                         onClick={() => handleButtonClick('Comentaris')}>Comentaris
                                 </button>
-                                <button className={`btn btn-secondary ${selectedButton === 'Desats' ? 'selected' : ''}`}
+                                {selectedUser === username && (
+                                    <button
+                                        className={`btn btn-secondary ${selectedButton === 'Desats' ? 'selected' : ''}`}
                                         onClick={() => handleButtonClick('Desats')}>Desats
-                                </button>
+                                    </button>
+                                )}
                             </div>
 
                             {selectedButton === 'Publicacions' ? (
@@ -254,17 +264,19 @@ export function Perfil () {
                                                 <div className="col-auto mr-2">
                                                     <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
                                                 </div>
-                                                <div className="dropdown col-auto">
-                                                    <Dropdown>
-                                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                            &#8942;
-                                                        </Dropdown.Toggle>
-                                                        <Dropdown.Menu>
-                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                                        </Dropdown.Menu>
-                                                    </Dropdown>
-                                                </div>
+                                                {selectedUser === username && (
+                                                    <div className="dropdown col-auto">
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                                &#8942;
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu>
+                                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </div>
+                                                )}
                                             </div>
                                             <hr className="my-3"></hr>
                                         </div>
@@ -299,17 +311,19 @@ export function Perfil () {
                                                 <div className="col-auto mr-2">
                                                     <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
                                                 </div>
-                                                <div className="dropdown col-auto">
-                                                    <Dropdown>
-                                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                            &#8942;
-                                                        </Dropdown.Toggle>
-                                                        <Dropdown.Menu>
-                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                                        </Dropdown.Menu>
-                                                    </Dropdown>
-                                                </div>
+                                                {selectedUser === username && (
+                                                    <div className="dropdown col-auto">
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                                &#8942;
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu>
+                                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </div>
+                                                )}
                                             </div>
                                             <hr className="my-3"></hr>
                                         </div>
@@ -347,17 +361,19 @@ export function Perfil () {
                                                 <div className="col-auto mr-2">
                                                     <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
                                                 </div>
-                                                <div className="dropdown col-auto">
-                                                    <Dropdown>
-                                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                            &#8942;
-                                                        </Dropdown.Toggle>
-                                                        <Dropdown.Menu>
-                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                                        </Dropdown.Menu>
-                                                    </Dropdown>
-                                                </div>
+                                                {selectedUser === username && (
+                                                    <div className="dropdown col-auto">
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                                &#8942;
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu>
+                                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </div>
+                                                )}
                                             </div>
                                             <hr className="my-3"></hr>
                                         </div>
@@ -387,17 +403,19 @@ export function Perfil () {
                                                 <div className="col-auto mr-2">
                                                     <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
                                                 </div>
-                                                <div className="dropdown col-auto">
-                                                    <Dropdown>
-                                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                                            &#8942;
-                                                        </Dropdown.Toggle>
-                                                        <Dropdown.Menu>
-                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                                        </Dropdown.Menu>
-                                                    </Dropdown>
-                                                </div>
+                                                {selectedUser === username && (
+                                                    <div className="dropdown col-auto">
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                                                &#8942;
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu>
+                                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                                                <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </div>
+                                                )}
                                             </div>
                                             <hr className="my-3"></hr>
                                         </div>
