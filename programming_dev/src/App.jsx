@@ -3,6 +3,7 @@ import {Index} from './components/Index'
 import {Search} from './components/Search'
 import {Post} from './components/Post'
 import {Communities} from './components/Communities'
+import {Community} from './components/Community.jsx'
 import {Switch,Route} from 'react-router-dom'
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/layout.css'
@@ -37,6 +38,7 @@ function App() {
         <Switch>
             <Route path="/createPost" component={CreatePost}/>
             <Route path="/posts/:postId" component={Post}/>
+            <Route path="/communities/:communityId" component={Community} />
             <Route path="/search" component={Search} />
             <Route exact path="/posts" component={Index} />
             <Route path="/communities" component={Communities} />
