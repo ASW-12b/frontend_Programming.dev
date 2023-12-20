@@ -1,10 +1,15 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import '../styles/comunitats.css';
 import {createCommunity} from "../controllers/CtrlCommunity.js";
+import {getCommunities} from "../controllers/CtrlCommunities.js";
+import {getInfo} from "../controllers/CtrlIndex.js";
 export function Communities () {
-    const [selectedButton, setSelectedButton] = useState('Tot');
+    const [selectedButton, setSelectedButton] = useState('Subscrit');
     const [messages, setMessages] = useState([]);
     const [crear_o_llistar, setCrear_o_llistar] = useState(false);
+    const [info, setInfo] = useState([]);
+    const [subscrits, setSubscrits] = useState([]);
+
 
     const handleButtonClick = (button) => {
         setSelectedButton(button);
@@ -13,6 +18,31 @@ export function Communities () {
     const handleButtonClick2 = (button) => {
         setCrear_o_llistar(true)
     };
+
+     const handleButtonClickForCommunity = (button) => {
+        setCrear_o_llistar(true)
+    };
+
+    useEffect(() => {
+    const fetchCommunities = () => {
+        getCommunities(selectedButton)
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    setMessages([result.message]);
+                    setInfo([]);
+                } else {
+                    if (selectedButton == "Subscrit") {
+                        setSubscrits(result.data);
+                    }
+                    setInfo(result.data);
+                    setMessages([]);
+                }
+            });
+    };
+
+    fetchCommunities();
+}, [selectedButton]);
 
 
     const CreateCommunityForm = () => {
@@ -28,22 +58,18 @@ export function Communities () {
             .then(result => {
                 if (result.isError) {
                 console.error('Error creating community:', result.message);
-                // Handle the error as needed, e.g., set an error message state
                 setMessages([result.message]);
               } else {
-                // Handle the success case, e.g., update the UI or set a success message state
                 setInfo(result.data);
-                setMessages([]); // Clear the error message state on success
+                setMessages([]);
               }
             })
             .catch(error => {
               console.error('API call failed:', error);
-              // Handle the error as needed, e.g., set an error message state
               setMessages(['API call failed']);
 
             });
     };
-
 
     const handleChange = (e) => {
       const { name, value, files } = e.target;
@@ -189,6 +215,21 @@ export function Communities () {
                         <th></th>
                     </tr>
                     </thead>
+                    <tbody>
+                    {info.map((community, index) => (
+                        <tr key={index}>
+                            <td>{community[0].fields.name}</td>
+                            <td>{community[0].fields.subs}</td>
+                            <td>{community[0].fields.publicacions}</td>
+                            <td>{community[0].fields.comentaris}</td>
+                            <td>
+                                <button onClick={() => handleButtonClickForCommunity(community)}>
+                                    Your Button Text
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
                 </table>
             </div>
         )
