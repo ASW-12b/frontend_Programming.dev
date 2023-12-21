@@ -57,35 +57,59 @@ export function Search() {
   );
 
   const renderComment = (c, index) => (
-  <div key={index}>
-    <a>{c.content}</a>
-  </div>
-);
+      <div key={index} className="col-12 col-lg-6 offset-lg-3 mb-4 filtre">
+          <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${c.pk}`}>
+              <h4><b>{c.content}</b></h4>
+          </a>
+          <div className="row px-4">
+              <div className="col-auto mr-2">
+                  <a href="" className="link"><FontAwesomeIcon icon={faComment}/></a>
+              </div>
+              <div className="col-auto mr-2">
+                  <p>{c.commentor}</p>
+              </div>
+              <div className="col-auto mr-2">
+                  <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
+              </div>
+              <div className="col-auto">
+                  <p className="mr-2">
+                      {c.TotalVotes}
+                  </p>
+              </div>
+              <div className="col-auto mr-2">
+                  <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
+              </div>
+              <div className="col-auto mr-2">
+                  <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
+              </div>
+          </div>
+      </div>
+  );
 
-   const renderPost = (p, index) => (
-       <div key={index} className="col-12 col-lg-6 offset-lg-3 mb-4 filtre">
-               <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${p.pk}`}>
-                   <h4><b>{p.fields && p.fields.title}</b></h4>
-               </a>
-               <div className="row px-4">
-                   <div className="col-auto mr-2">
-                       <a href="" className="link"><FontAwesomeIcon icon={faComment}/></a>
-                   </div>
-                   <div className="col-auto mr-2">
-                       <p>{p.fields && p.fields.numComments}</p>
-                   </div>
-                   <div className="col-auto mr-2">
-                       <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
-                   </div>
-                   <div className="col-auto">
-                       <p className="mr-2">
-                           {p.fields && p.fields.totalVotes}
-                       </p>
-                   </div>
-                   <div className="col-auto mr-2">
-                       <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
-                   </div>
-                   <div className="col-auto mr-2">
+    const renderPost = (p, index) => (
+        <div key={index} className="col-12 col-lg-6 offset-lg-3 mb-4 filtre">
+            <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${p.pk}`}>
+                <h4><b>{p.fields && p.fields.title}</b></h4>
+            </a>
+            <div className="row px-4">
+                <div className="col-auto mr-2">
+                    <a href="" className="link"><FontAwesomeIcon icon={faComment}/></a>
+                </div>
+                <div className="col-auto mr-2">
+                    <p>{p.fields && p.fields.numComments}</p>
+                </div>
+                <div className="col-auto mr-2">
+                    <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
+                </div>
+                <div className="col-auto">
+                    <p className="mr-2">
+                        {p.fields && p.fields.totalVotes}
+                    </p>
+                </div>
+                <div className="col-auto mr-2">
+                    <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
+                </div>
+                <div className="col-auto mr-2">
                        <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
                    </div>
                    {/*

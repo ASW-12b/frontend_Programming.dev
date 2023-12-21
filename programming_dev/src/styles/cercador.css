@@ -77,3 +77,8 @@ h1 {
   border-color: black !important;
   color: black !important;
 }
+
+.filtre {
+    margin-top: 10px;
+    margin-right: 10px
+}
