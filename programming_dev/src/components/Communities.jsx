@@ -85,6 +85,7 @@ export function Communities () {
 
       // Handle form submission here (use community state)
       console.log("Form submitted:", community);
+
     };
 
     return (
