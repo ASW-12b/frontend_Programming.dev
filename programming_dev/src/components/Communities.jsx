@@ -2,7 +2,8 @@ import {useEffect, useState} from "react";
 import '../styles/comunitats.css';
 import {createCommunity} from "../controllers/CtrlCommunity.js";
 import {getCommunities} from "../controllers/CtrlCommunities.js";
-import {getInfo} from "../controllers/CtrlIndex.js";
+import {updateSubscrits} from "../controllers/CtrlCommunity.js";
+import {deleteSubscrits} from "../controllers/CtrlCommunity.js";
 export function Communities () {
     const [selectedButton, setSelectedButton] = useState('Subscrit');
     const [messages, setMessages] = useState([]);
@@ -19,9 +20,40 @@ export function Communities () {
         setCrear_o_llistar(true)
     };
 
-     const handleButtonClickForCommunity = (button) => {
-        setCrear_o_llistar(true)
-    };
+     const handleButtonClickSubs = (community) => {
+        updateSubscrits(community)
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    setMessages([result.message]);
+                } else {
+                    setSubscrits(community);
+                    setMessages([]);
+                }
+            });
+     };
+
+      const handleButtonClickDesubs = (community) => {
+          deleteSubscrits(community)
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    setMessages([result.message]);
+                } else {
+                    const updatedSubscrits = subscrits.filter(subscrit => subscrit[0].pk !== community[0].pk);
+                    setSubscrits(updatedSubscrits);
+                    setMessages([]);
+                }
+            });
+      };
+
+     const SubsOrDeSubs = () => {
+          info.forEach((c, communityIndex) => {
+            subscrits.forEach((cs, subIndex) => {
+                // Perform actions or computations for each subscrit
+            });
+        });
+     };
 
     useEffect(() => {
     const fetchCommunities = () => {
@@ -33,6 +65,7 @@ export function Communities () {
                     setInfo([]);
                 } else {
                     if (selectedButton == "Subscrit") {
+                        console.log('Subscrits:', result.data);
                         setSubscrits(result.data);
                     }
                     setInfo(result.data);
@@ -187,7 +220,7 @@ export function Communities () {
 
     return (
         crear_o_llistar ? (
-             <CreateCommunityForm />
+             <CreateCommunityForm/>
         ) : (
             <div className="custom-margin">
                 <h1>Llista de Comunitats</h1>
@@ -224,9 +257,21 @@ export function Communities () {
                             <td>{community[0].fields.publicacions}</td>
                             <td>{community[0].fields.comentaris}</td>
                             <td>
-                                <button onClick={() => handleButtonClickForCommunity(community)}>
-                                    Your Button Text
-                                </button>
+                                {subscrits.includes(community) ? (
+                                    <button
+                                        onClick={() => handleButtonClickDesubs(community)}
+                                        className="btn btn-success"
+                                    >
+                                        Subscrit
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => handleButtonClickSubs(community)}
+                                        className="btn btn-danger"
+                                    >
+                                        Subscriu-te
+                                    </button>
+                                )}
                             </td>
                         </tr>
                     ))}
