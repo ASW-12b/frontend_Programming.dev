@@ -10,11 +10,12 @@ export async function getVotesPost() {
               .then(response => response.json())
               .then(data => {
                 if (data.message) return {}
-                console.log(data)
+                //console.log(data)
                 const mapa = data.reduce((acc, obj) => {
-                  acc[obj.commentId] = obj;
+                  acc[obj.postId] = obj;
                   return acc;
                 }, {});
+                console.log(mapa)
                 return mapa
               })
               .catch(error => {
@@ -34,11 +35,12 @@ export async function getVotesPost() {
               .then(response => response.json())
               .then(data => {
                 if (data.message) return {}
-                console.log(data)
+                //console.log(data)
                 const mapa = data.reduce((acc, obj) => {
-                  acc[obj.commentId] = obj;
+                  acc[obj.postId] = obj;
                   return acc;
                 }, {});
+                console.log(mapa)
                 return mapa
               })
               .catch(error => {

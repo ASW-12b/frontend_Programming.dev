@@ -58,6 +58,7 @@ export function Post () {
 
     const handleSubmit = event => {
         event.preventDefault();
+        console.log(formData)
         editPost(formData,postId)
         .then(setEditing(false))
       };
@@ -162,6 +163,7 @@ export function Post () {
     return (
         <>      
         {post && !editing ? (
+          <>
             <div className="custom-margin2">
             <div className="post container-lg">
                 <div className="row">
@@ -214,7 +216,8 @@ export function Post () {
                 </div>
             </div>
         </div>
-        
+        <CommentsPost id={postId} comments={comments} refreshComments={refreshComments} votes={votes} likes={likes}/>
+        </>
         ) : (
             (post && editing) ? (
                 <div className="form-box">
@@ -309,7 +312,6 @@ export function Post () {
                 <p>Cargando.....</p>
             )
         )}
-        <CommentsPost id={postId} comments={comments} refreshComments={refreshComments} votes={votes} likes={likes}/>
         </>
 
         

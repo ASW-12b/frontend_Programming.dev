@@ -5,10 +5,10 @@ import { faArrowDown,faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { /*faTrashCan,faPenToSquare ,*/faStar,faComment} from '@fortawesome/free-regular-svg-icons'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown } from 'react-bootstrap';
+import {getInfo} from '../controllers/CtrlIndex'
 import { getVotesComment,getLikesComment } from '../controllers/CtrlComment';
 import { getVotesPost,getLikesPost } from '../controllers/CtrlPosts';
 import {likePost,votePost} from '../controllers/CtrlPost'
-
 
 export function Index() {
     const [info, setInfo] = useState([]);
@@ -20,68 +20,49 @@ export function Index() {
     const [votesComments,setVotesComments] = useState([])
     const [likesPosts,setLikesPosts] = useState([])
     const [likesComments,setLikesComments] = useState([])
+    
+
+    const refreshInfo = async () => {
+        const vp = await getVotesPost()
+        const lp = await getLikesPost()
+        const vc = await getVotesComment()
+        const lc = await getLikesComment()
+        setVotesPosts(vp)
+        setLikesPosts(lp)
+        setVotesComments(vc)
+        setLikesComments(lc)
+      }
+
+      
 
 
-  function getInfo(order, button, button2) {
-    let apiUrl;
-
-    // Define different API URLs based on the button value
-    if (button2 === 'Publicacions') {
-        apiUrl = 'https://apiprogrammingdev.onrender.com/posts';
-    } else if (button2 === 'Comentaris') {
-        apiUrl = 'https://apiprogrammingdev.onrender.com/comments'; // Adjust the actual API endpoint for comments
-    }
-
-    const url = `${apiUrl}?Tipus_Ordenacio=${order}&Filtre=${button}`;
-    console.log('Fetching data from:', url);
-
-    return fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-        .then(response => response.json())
-        .then(data => {
-             console.log('Data fetched:', data);
-            if (data.message) {
-                setMessages([data.message]);
-                return [];
-            } else {
-                setMessages([]);
-            refreshInfo()
-            return data;
-            }
-        });
-  }
-
-  useEffect(() => {
+    useEffect(() => {
     const fetchInfo = () => {
         getInfo(selectedOrder, selectedButton, selectedButton2)
-            .then(info => {
-                setInfo(info);
-                refreshInfo()
-            })
-        .catch(error => {
-            console.error('Error fetching info:', error);
-            // Handle the error as needed, e.g., set an error message state
-        });
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    // Handle the error as needed, e.g., set an error message state
+                    setMessages([result.message]);
+                    setInfo([]); // Clear the data state in case of an error
+                } else {
+                    setInfo(result.data);
+                    setMessages([]); // Clear the error message state on success
+                    
+                    
+                }
+            });
+        
     };
 
     fetchInfo();
-    refreshInfo()
-  }, [selectedOrder, selectedButton, selectedButton2]);
+}, [selectedOrder, selectedButton, selectedButton2,votesPosts,likesPosts]);
 
-  const refreshInfo = async () => {
-    const vp = await getVotesPost()
-    const lp = await getLikesPost()
-    const vc = await getVotesComment()
-    const lc = await getLikesComment()
-    setVotesPosts(vp)
-    setLikesPosts(lp)
-    setVotesComments(vc)
-    setLikesComments(lc)
-  }
+
+
+
+
+
 
 
 
@@ -102,100 +83,121 @@ export function Index() {
   const handleClickVotePost = async (postId,type) => {
     await votePost(postId,type)
     refreshInfo()
+    getInfo(selectedOrder, selectedButton, selectedButton2)
+    
+    
+    
   }
 
   const handleClickLikePost = async (postId) => {
     await likePost(postId)
-    refreshInfo()
+    const lp = await getLikesPost(); // Obtener los likes actualizados
+    setLikesPosts(lp);
+    getInfo(selectedOrder, selectedButton, selectedButton2)
   }
 
-  return (
-    <div className='form-box'>
-        {/* Dropdown menu */}
-        <Dropdown onSelect={handleOrderChange} className="mb-3">
-            <Dropdown.Toggle variant="light" id="order-dropdown">
-                {selectedOrder}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-                <Dropdown.Item eventKey="Nou">Nou</Dropdown.Item>
-                <Dropdown.Item eventKey="Antic">Antic</Dropdown.Item>
-                <Dropdown.Item eventKey="Mes Comentaris">Mes Comentaris</Dropdown.Item>
-                <Dropdown.Item eventKey="Mes popular">Mes Popular</Dropdown.Item>
-            </Dropdown.Menu>
-        </Dropdown>
-
-        {/* Buttons */}
-        <div className="btn-group rareButton" role="group" aria-label="Basic example">
-            <button className={`btn btn-secondary ${selectedButton === 'Subscrit' ? 'selected' : ''}`} onClick={() => handleButtonClick('Subscrit')}>Subscrit</button>
-            <button className={`btn btn-secondary ${selectedButton === 'Tot' ? 'selected' : ''}`} onClick={() => handleButtonClick('Tot')}>Tot</button>
-        </div>
-
-        {/* Buttons */}
-        <div className="btn-group rareButton" role="group" aria-label="Basic example">
-            <button className={`btn btn-secondary ${selectedButton2 === 'Publicacions' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Publicacions')}>Publicacions</button>
-            <button className={`btn btn-secondary ${selectedButton2 === 'Comentaris' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Comentaris')}>Comentaris</button>
-        </div>
-
-        {/* Display messages or posts or comentaris*/}
-        {messages.length > 0 ? (
-            messages.map((message, index) => (
-            <div key={index} className="alert alert-danger" role="alert">
-                {message}
-            </div>
-            ))
-        ) : (
-        <>
-            {selectedButton2 === 'Publicacions' ? (
-            // Render posts
-                info.length > 0 ? (
-                    info.map(p => {
-                        return (
-                        <div key={p.pk} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                            <a style={{color:'black',textDecoration:'none'}} href={`/posts/${p.pk}`}>
-                                <h4><b>{p.fields.title}</b></h4>
-                            </a>
-                            <div className="row px-4">
-                                <div className="col-auto mr-2">
-                                        <a href={`/posts/${p.pk}`} className="link"><FontAwesomeIcon icon={faComment} /></a>
-                                </div>
-                                <div className="col-auto mr-2">
-                                        <p>{p.fields.numComments}</p>
-                                </div>
-                                <div className="col-auto mr-2">
-                                        <FontAwesomeIcon onClick={() => {handleClickVotePost(p.pk,'positive')}} icon={faArrowUp} style={{color: (votesPosts[p.pk] && votesPosts[p.pk].type === 'positive') ? "#ff0000" : "inherit"}} icon={faArrowUp} />
-                                </div>
-                                <div className="col-auto">
-                                    <p className="mr-2">
-                                        {p.fields.totalVotes}
-                                    </p>
-                                </div>
-                                <div className="col-auto mr-2">
-                                        <FontAwesomeIcon onClick={() => {handleClickVotePost(p.pk,'negative')}} icon={faArrowUp} style={{color: (votesPosts[p.pk] && votesPosts[p.pk].type === 'negative') ? "#ff0000" : "inherit"}} icon={faArrowDown} />
-                                </div>
-                                <div className="col-auto mr-2">
-                                        <FontAwesomeIcon onClick={() => {handleClickLikePost(p.pk)}} style={{color: likesPosts[p.id] ? "#ffff00" : "inherit"}} icon={faStar} />
-                                </div>
-                            </div>
-                            <hr className="my-3"></hr>
-                        </div>
-                    )})
-                ) : (
-                    <p>No hi ha cap posts per mostrar</p>
-                )
-            ) : (
-                info.length > 0 ? (
-                    info.map(c => {
-                        return (
-                            <div key={c.id}>
-                                <a>{c.content}</a>
-                            </div>
-                        )
-                    })
-                ) : (
-                    <p>No hi cap comentari per mostrar</p>
-                ))}
-        </>
-        )}
+  const renderMessage = (message, index) => (
+    <div key={index} className="alert alert-danger" role="alert">
+      {message}
     </div>
-  )
+  );
+
+  const renderComment = (c, index) => (
+  <div key={index}>
+    <a>{c.content}</a>
+  </div>
+);
+
+   const renderPost = (p, index) => (
+       <div key={index} className="col-12 col-lg-6 offset-lg-3 mb-4 filtre">
+               <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${p.pk}`}>
+                   <h4><b>{p.fields && p.fields.title}</b></h4>
+               </a>
+               <div className="row px-4">
+                   <div className="col-auto mr-2">
+                    <a href={`/posts/${p.pk}`} className="link"><FontAwesomeIcon icon={faComment} /></a>
+                   </div>
+                   <div className="col-auto mr-2">
+                       <p>{p.fields && p.fields.numComments}</p>
+                   </div>
+                   <div className="col-auto mr-2">
+                    <FontAwesomeIcon onClick={() => {handleClickVotePost(p.pk,'positive')}}  style={{color: (votesPosts[p.pk] && votesPosts[p.pk].type === 'positive') ? "#ff0000" : "inherit"}} icon={faArrowUp} />
+                   </div>
+                   <div className="col-auto">
+                       <p className="mr-2">
+                           {p.fields && p.fields.totalVotes}
+                       </p>
+                   </div>
+                   <div className="col-auto mr-2">
+                    <FontAwesomeIcon onClick={() => {handleClickVotePost(p.pk,'negative')}}  style={{color: (votesPosts[p.pk] && votesPosts[p.pk].type === 'negative') ? "#ff0000" : "inherit"}} icon={faArrowDown} />
+                   </div>
+                   <div className="col-auto mr-2">
+                    <FontAwesomeIcon onClick={() => {handleClickLikePost(p.pk)}} style={{color: likesPosts[p.pk] ? "#ffff00" : "inherit"}} icon={faStar} />
+                   </div>
+                   {/*
+                                <div className="dropdown col-auto">
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
+                                            &#8942;
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item href={`/posts/${p.pk}`}><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
+                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </div>
+                    */}
+               </div>
+               <hr className="my-3"></hr>
+       </div>
+   );
+
+    return (
+        <div className="custom-margin">
+            <div className="container">
+                <div className="filtre">
+                    <Dropdown onSelect={handleOrderChange}>
+                        <Dropdown.Toggle id="order-dropdown" className="custom-dropdown-button">
+                            {selectedOrder}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item eventKey="Nou">Nou</Dropdown.Item>
+                            <Dropdown.Item eventKey="Antic">Antic</Dropdown.Item>
+                            <Dropdown.Item eventKey="Mes Comentaris">Mes Comentaris</Dropdown.Item>
+                            <Dropdown.Item eventKey="Mes popular">Mes Popular</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
+                <div className="filtre btn-group" role="group">
+                    <button className={`btn btn-secondary rareButton ${selectedButton === 'Subscrit' ? 'selected' : ''}`} onClick={() => handleButtonClick('Subscrit')}>Subscrit</button>
+                    <button className={`btn btn-secondary rareButton ${selectedButton === 'Tot' ? 'selected' : ''}`} onClick={() => handleButtonClick('Tot')}>Tot</button>
+                </div>
+                <div className="filtre btn-group" role="group">
+                    <button className={`btn btn-secondary rareButton ${selectedButton2 === 'Publicacions' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Publicacions')}>Publicacions</button>
+                    <button className={`btn btn-secondary rareButton ${selectedButton2 === 'Comentaris' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Comentaris')}>Comentaris</button>
+                </div>
+            </div>
+
+            {/* Display messages or posts or comments */}
+            {messages.length > 0 ? (
+                messages.map((message, index) => renderMessage(message, index))
+            ) : (
+                <>
+                    {selectedButton2 === 'Publicacions' ? (
+                        info.length > 0 ? (
+                            info.map((p, index) => renderPost(p, index))
+                        ) : (
+                            <p>No hi ha cap posts per mostrar</p>
+                        )
+                    ) : (
+                        info.length > 0 ? (
+                            info.map((c, index) => renderComment(c, index))
+                        ) : (
+                            <p>No hi cap comentari per mostrar</p>
+                        )
+                    )}
+                </>
+            )}
+        </div>
+    )
 }
