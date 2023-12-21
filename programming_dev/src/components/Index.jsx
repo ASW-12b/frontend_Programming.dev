@@ -9,6 +9,7 @@ import {getInfo} from '../controllers/CtrlIndex'
 import { getVotesComment,getLikesComment } from '../controllers/CtrlComment';
 import { getVotesPost,getLikesPost } from '../controllers/CtrlPosts';
 import {likePost,votePost} from '../controllers/CtrlPost'
+import { LikeComment,voteComment } from '../controllers/CtrlComment';
 
 
 export function Index() {
@@ -84,6 +85,20 @@ export function Index() {
     getInfo(selectedOrder, selectedButton, selectedButton2)
   }
 
+  const handleClickVoteComments = async (commentId,type) => {
+    await voteComment(commentId,type)
+    refreshInfo()
+    getInfo(selectedOrder, selectedButton, selectedButton2)
+
+  }
+
+  const handleClickLikeComments = async (commentId) => {
+    await LikeComment(commentId)
+    const lp = await getLikesComment(); // Obtener los likes actualizados
+    setLikesComments(lp);
+    getInfo(selectedOrder, selectedButton, selectedButton2)
+  }
+
   const renderMessage = (message, index) => (
     <div key={index} className="alert alert-danger" role="alert">
       {message}
@@ -92,7 +107,7 @@ export function Index() {
 
   const renderComment = (c, index) => (
        <div key={index} className="col-12 col-lg-6 offset-lg-3 mb-4 filtre">
-            <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${c.pk}`}>
+            <a style={{color: 'black', textDecoration: 'none'}}>
                 <h4><b>{c.content}</b></h4>
             </a>
             <div className="row px-4">
@@ -103,7 +118,10 @@ export function Index() {
                     <p>{c.commentor}</p>
                 </div>
                 <div className="col-auto mr-2">
-                    <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
+                    <FontAwesomeIcon onClick={() => {
+                       handleClickVoteComments(c.id, 'positive')
+                   }}
+                                    style={{color: (votesComments[c.id] && votesComments[c.id].type === 'positive') ? "#ff0000" : "inherit"}} icon={faArrowUp}/>
                 </div>
                 <div className="col-auto">
                     <p className="mr-2">
@@ -111,10 +129,15 @@ export function Index() {
                     </p>
                 </div>
                 <div className="col-auto mr-2">
-                    <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
+                    <FontAwesomeIcon onClick={() => {
+                       handleClickVoteComments(c.id, 'negative')
+                   }}
+                                    style={{color: (votesComments[c.id] && votesComments[c.id].type === 'negative') ? "#ff0000" : "inherit"}} icon={faArrowUp}/>
                 </div>
                 <div className="col-auto mr-2">
-                    <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
+                    <FontAwesomeIcon onClick={() => {
+                       handleClickLikeComments(c.id)
+                   }} style={{color: likesComments[c.id] ? "#ffff00" : "inherit"}} icon={faStar}/>
                 </div>
             </div>
        </div>
