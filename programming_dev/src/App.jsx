@@ -4,16 +4,33 @@ import {Search} from './components/Search'
 import {Post} from './components/Post'
 import {Communities} from './components/Communities'
 import {Community} from './components/Community.jsx'
+import {Perfil} from "./components/Perfil";
 import {Switch,Route} from 'react-router-dom'
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-
-
+import React, { useState} from 'react';
+import { Dropdown } from 'react-bootstrap';
 
 
 function App() {
+
+     const setTokenAndUser = (token, user) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('selectedUser', user);
+    };
+    const handleUserSelection = (user) => {
+        let token = '';
+        if (user === 'adrian.contreras.martin_v2') {
+            token = 'f54b3557-06d6-4dcb-b95f-d297fd821738';
+        } else if (user === 'adrian.contreras.martin') {
+            token = '3ed9e367-519d-4435-8b35-c15d829e528f';
+        }
+        setTokenAndUser(token, user);
+    };
+
+
   return (
     <>
       <div className="custom-margin">
@@ -26,11 +43,26 @@ function App() {
                         <FontAwesomeIcon icon={faMagnifyingGlass}/>
                     </a>
                     <div className="nav-item dropdown">
-                        <ul className="dropdown-menu" aria-labelledby="userDropdown">
-                            <li><a href="#" className="dropdown-item">El meu Perfil</a></li>
-                            <li><a href="#" className="dropdown-item">Tancar Sessió</a></li>
-                        </ul>
-                        <a href="#" className="nav-link">Iniciar Sessió</a>
+                        <Dropdown>
+                            <Dropdown.Toggle href="#"
+                                             id="userDropdown" style={{marginRight: '10px'}}>
+                                Usuaris
+                            </Dropdown.Toggle>
+                            {/* Dropdown Menu */}
+                            <Dropdown.Menu aria-labelledby="userDropdown">
+                                <Dropdown.Item
+                                    style={{backgroundColor: localStorage.getItem('selectedUser') === 'adrian.contreras.martin_v2' ? '#c4c4c4' : 'transparent'}}
+                                    onClick={() => handleUserSelection('adrian.contreras.martin_v2')}>adrian.contreras.martin_v2</Dropdown.Item>
+                                <Dropdown.Item
+                                    style={{backgroundColor: localStorage.getItem('selectedUser') === 'adrian.contreras.martin' ? '#c4c4c4' : 'transparent'}}
+                                    onClick={() => handleUserSelection('adrian.contreras.martin')}>adrian.contreras.martin</Dropdown.Item>
+                                {localStorage.getItem('selectedUser') && (
+                                    <Dropdown.Item href={`/user/${localStorage.getItem('selectedUser')}`}>
+                                        El meu perfil
+                                    </Dropdown.Item>
+                                )}
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 </div>
             </nav>
@@ -39,11 +71,12 @@ function App() {
             <Route path="/createPost" component={CreatePost}/>
             <Route path="/posts/:postId" component={Post}/>
             <Route path="/communities/:communityId" component={Community} />
-            <Route path="/search" component={Search} />
-            <Route exact path="/posts" component={Index} />
-            <Route path="/communities" component={Communities} />
-            <Route path="/" component={Index} />
-      </Switch>
+            <Route path="/user/:username" component={Perfil}/>
+            <Route path="/search" component={Search}/>
+            <Route exact path="/posts" component={Index}/>
+            <Route path="/communities" component={Communities}/>
+            <Route path="/" component={Index}/>
+        </Switch>
     </>
   )
 }

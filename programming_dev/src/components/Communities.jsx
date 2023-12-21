@@ -1,10 +1,16 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import '../styles/comunitats.css';
 import {createCommunity} from "../controllers/CtrlCommunity.js";
+import {getCommunities} from "../controllers/CtrlCommunities.js";
+import {updateSubscrits} from "../controllers/CtrlCommunity.js";
+import {deleteSubscrits} from "../controllers/CtrlCommunity.js";
 export function Communities () {
-    const [selectedButton, setSelectedButton] = useState('Tot');
+    const [selectedButton, setSelectedButton] = useState('Subscrit');
     const [messages, setMessages] = useState([]);
     const [crear_o_llistar, setCrear_o_llistar] = useState(false);
+    const [info, setInfo] = useState([]);
+    const [subscrits, setSubscrits] = useState([]);
+
 
     const handleButtonClick = (button) => {
         setSelectedButton(button);
@@ -13,6 +19,63 @@ export function Communities () {
     const handleButtonClick2 = (button) => {
         setCrear_o_llistar(true)
     };
+
+     const handleButtonClickSubs = (community) => {
+        updateSubscrits(community)
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    setMessages([result.message]);
+                } else {
+                    setSubscrits(community);
+                    setMessages([]);
+                }
+            });
+     };
+
+      const handleButtonClickDesubs = (community) => {
+          deleteSubscrits(community)
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    setMessages([result.message]);
+                } else {
+                    const updatedSubscrits = subscrits.filter(subscrit => subscrit[0].pk !== community[0].pk);
+                    setSubscrits(updatedSubscrits);
+                    setMessages([]);
+                }
+            });
+      };
+
+     const SubsOrDeSubs = () => {
+          info.forEach((c, communityIndex) => {
+            subscrits.forEach((cs, subIndex) => {
+                // Perform actions or computations for each subscrit
+            });
+        });
+     };
+
+    useEffect(() => {
+    const fetchCommunities = () => {
+        getCommunities(selectedButton)
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    setMessages([result.message]);
+                    setInfo([]);
+                } else {
+                    if (selectedButton == "Subscrit") {
+                        console.log('Subscrits:', result.data);
+                        setSubscrits(result.data);
+                    }
+                    setInfo(result.data);
+                    setMessages([]);
+                }
+            });
+    };
+
+    fetchCommunities();
+}, [selectedButton]);
 
 
     const CreateCommunityForm = () => {
@@ -28,22 +91,18 @@ export function Communities () {
             .then(result => {
                 if (result.isError) {
                 console.error('Error creating community:', result.message);
-                // Handle the error as needed, e.g., set an error message state
                 setMessages([result.message]);
               } else {
-                // Handle the success case, e.g., update the UI or set a success message state
                 setInfo(result.data);
-                setMessages([]); // Clear the error message state on success
+                setMessages([]);
               }
             })
             .catch(error => {
               console.error('API call failed:', error);
-              // Handle the error as needed, e.g., set an error message state
               setMessages(['API call failed']);
 
             });
     };
-
 
     const handleChange = (e) => {
       const { name, value, files } = e.target;
@@ -59,6 +118,7 @@ export function Communities () {
 
       // Handle form submission here (use community state)
       console.log("Form submitted:", community);
+
     };
 
     return (
@@ -160,7 +220,7 @@ export function Communities () {
 
     return (
         crear_o_llistar ? (
-             <CreateCommunityForm />
+             <CreateCommunityForm/>
         ) : (
             <div className="custom-margin">
                 <h1>Llista de Comunitats</h1>
@@ -189,6 +249,33 @@ export function Communities () {
                         <th></th>
                     </tr>
                     </thead>
+                    <tbody>
+                    {info.map((community, index) => (
+                        <tr key={index}>
+                            <td>{community[0].fields.name}</td>
+                            <td>{community[0].fields.subs}</td>
+                            <td>{community[0].fields.publicacions}</td>
+                            <td>{community[0].fields.comentaris}</td>
+                            <td>
+                                {subscrits.includes(community) ? (
+                                    <button
+                                        onClick={() => handleButtonClickDesubs(community)}
+                                        className="btn btn-success"
+                                    >
+                                        Subscrit
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => handleButtonClickSubs(community)}
+                                        className="btn btn-danger"
+                                    >
+                                        Subscriu-te
+                                    </button>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
                 </table>
             </div>
         )

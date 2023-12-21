@@ -36,3 +36,59 @@ export function createCommunity(id, name, avatar, banner) {
       throw error; // You can handle the error as needed
     });
 }
+
+
+export function updateSubscrits(community) {
+    const communityId = community[0].pk;
+    let apiUrl = `https://apiprogrammingdev.onrender.com/communities/${communityId}/subscribe`;
+    console.log('Fetching data from:', apiUrl);
+
+    return fetch(apiUrl, {
+        method: 'PUT',  // Change the method to 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json',  // Include 'accept' header
+            'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',  // Include 'Authorization' header
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data fetched:', data);
+            if (data.message) {
+                return { isError: true, message: data.message };
+            }
+            return { isError: false, data: data };
+        })
+        .catch(error => {
+            console.error('Error fetching info:', error);
+            return { isError: true, message: 'An error occurred while fetching data.' };
+        });
+}
+
+
+export function deleteSubscrits(community) {
+    const communityId = community[0].pk;
+    let apiUrl = `https://apiprogrammingdev.onrender.com/communities/${communityId}/unsubscribe`;
+    console.log('Fetching data from:', apiUrl);
+
+    return fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json',  // Include 'accept' header
+            'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',  // Include 'Authorization' header
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data fetched:', data);
+            if (data.message) {
+                return { isError: true, message: data.message };
+            }
+            return { isError: false, data: data };
+        })
+        .catch(error => {
+            console.error('Error fetching info:', error);
+            return { isError: true, message: 'An error occurred while fetching data.' };
+        });
+}
