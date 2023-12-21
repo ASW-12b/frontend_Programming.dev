@@ -5,11 +5,12 @@ import {getCommunities} from "../controllers/CtrlCommunities.js";
 import {updateSubscrits} from "../controllers/CtrlCommunity.js";
 import {deleteSubscrits} from "../controllers/CtrlCommunity.js";
 export function Communities () {
-    const [selectedButton, setSelectedButton] = useState('Subscrit');
+    const [selectedButton, setSelectedButton] = useState('Tot');
     const [messages, setMessages] = useState([]);
     const [crear_o_llistar, setCrear_o_llistar] = useState(false);
-    const [info, setInfo] = useState([]);
+    const [allC, setAllC] = useState([]);
     const [subscrits, setSubscrits] = useState([]);
+    const [first, setFirst] = useState(true);
 
 
     const handleButtonClick = (button) => {
@@ -21,61 +22,112 @@ export function Communities () {
     };
 
      const handleButtonClickSubs = (community) => {
+          console.log('adiossss');
         updateSubscrits(community)
             .then(result => {
                 if (result.isError) {
                     console.error('Error fetching info:', result.message);
                     setMessages([result.message]);
                 } else {
-                    setSubscrits(community);
                     setMessages([]);
+                    if (selectedButton == 'Tot') {
+                        fetchCommunities2('Subscrit')
+                        fetchCommunities2('Tot')
+                    }
+                    else {
+                        fetchCommunities2('Tot')
+                        fetchCommunities2('Subscrit')
+                    }
                 }
             });
      };
 
       const handleButtonClickDesubs = (community) => {
+            console.log('holaaaa');
           deleteSubscrits(community)
             .then(result => {
                 if (result.isError) {
                     console.error('Error fetching info:', result.message);
                     setMessages([result.message]);
                 } else {
-                    const updatedSubscrits = subscrits.filter(subscrit => subscrit[0].pk !== community[0].pk);
-                    setSubscrits(updatedSubscrits);
                     setMessages([]);
+                    if (selectedButton == 'Tot') {
+                        fetchCommunities2('Subscrit')
+                        fetchCommunities2('Tot')
+                    }
+                    else {
+                        fetchCommunities2('Tot')
+                        fetchCommunities2('Subscrit')
+                    }
                 }
+
             });
       };
 
-     const SubsOrDeSubs = () => {
-          info.forEach((c, communityIndex) => {
-            subscrits.forEach((cs, subIndex) => {
-                // Perform actions or computations for each subscrit
-            });
-        });
-     };
-
-    useEffect(() => {
-    const fetchCommunities = () => {
-        getCommunities(selectedButton)
+       const fetchCommunities2 = (value) => {
+        getCommunities(value)
             .then(result => {
                 if (result.isError) {
                     console.error('Error fetching info:', result.message);
                     setMessages([result.message]);
-                    setInfo([]);
+                    setAllC([]);
                 } else {
-                    if (selectedButton == "Subscrit") {
+                    if (value == "Subscrit") {
                         console.log('Subscrits:', result.data);
                         setSubscrits(result.data);
                     }
-                    setInfo(result.data);
+                    if (value == "Tot") {
+                        console.log('All:', result.data);
+                        setAllC(result.data);
+                    }
                     setMessages([]);
                 }
             });
     };
 
-    fetchCommunities();
-}, [selectedButton]);
+
+    const fetchCommunities = () => {
+        console.log('mmmmmmm');
+        if (first) {
+            setFirst(false)
+            getCommunities('Subscrit')
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    setMessages([result.message]);
+                    setSubscrits([]);
+                } else {
+                    if (selectedButton == "Subscrit") {
+                        console.log('Subscrits:', result.data);
+                        setSubscrits(result.data);
+                    }
+                    setSubscrits(result.data);
+                    setMessages([]);
+                }
+            });
+        }
+        getCommunities(selectedButton)
+            .then(result => {
+                if (result.isError) {
+                    console.error('Error fetching info:', result.message);
+                    setMessages([result.message]);
+                    setAllC([]);
+                } else {
+                    if (selectedButton == "Subscrit") {
+                        console.log('Subscrits:', result.data);
+                        setSubscrits(result.data);
+                    }
+                    if (selectedButton == "Tot") {
+                        setAllC(result.data)
+                    }
+                    setMessages([]);
+                }
+            });
+    };
+
+    useEffect(() => {
+        fetchCommunities();
+    }, [selectedButton]);
 
 
     const CreateCommunityForm = () => {
@@ -93,7 +145,6 @@ export function Communities () {
                 console.error('Error creating community:', result.message);
                 setMessages([result.message]);
               } else {
-                setInfo(result.data);
                 setMessages([]);
               }
             })
@@ -250,31 +301,50 @@ export function Communities () {
                     </tr>
                     </thead>
                     <tbody>
-                    {info.map((community, index) => (
-                        <tr key={index}>
-                            <td><a href={`/communities/${community[0].pk}`}>{community[0].fields.name}</a></td>
-                            <td>{community[0].fields.subs}</td>
-                            <td>{community[0].fields.publicacions}</td>
-                            <td>{community[0].fields.comentaris}</td>
-                            <td>
-                                {subscrits.includes(community) ? (
+                    {selectedButton === 'Subscrit' ? (
+                        subscrits.length > 0 && subscrits.map((community, index) => (
+                            <tr key={index}>
+                                <td><a href={`/communities/${community[0].pk}`}>{community[0].fields.name}</a></td>
+                                <td>{community[0].fields.subs}</td>
+                                <td>{community[0].fields.publicacions}</td>
+                                <td>{community[0].fields.comentaris}</td>
+                                <td>
                                     <button
                                         onClick={() => handleButtonClickDesubs(community)}
                                         className="btn btn-success"
                                     >
                                         Subscrit
                                     </button>
-                                ) : (
-                                    <button
-                                        onClick={() => handleButtonClickSubs(community)}
-                                        className="btn btn-danger"
-                                    >
-                                        Subscriu-te
-                                    </button>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        allC.length > 0 && allC.map((community, index) => (
+                            <tr key={index}>
+                                <td><a href={`/communities/${community[0].pk}`}>{community[0].fields.name}</a></td>
+                                <td>{community[0].fields.subs}</td>
+                                <td>{community[0].fields.publicacions}</td>
+                                <td>{community[0].fields.comentaris}</td>
+                                <td>
+                                    {subscrits.length > 0 && subscrits.some((cs) => cs[0].pk === community[0].pk) ? (
+                                        <button
+                                            onClick={() => handleButtonClickDesubs(community)}
+                                            className="btn btn-success"
+                                        >
+                                            Subscrit
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleButtonClickSubs(community)}
+                                            className="btn btn-danger"
+                                        >
+                                            Subscriu-te
+                                        </button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))
+                    )}
                     </tbody>
                 </table>
             </div>
