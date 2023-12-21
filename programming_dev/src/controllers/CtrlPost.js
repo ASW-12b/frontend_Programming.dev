@@ -104,7 +104,7 @@ export async function comment(content,postId) {
 
 export async function getVotePost(postId) {
     const { token, selectedUser } = getTokenAndUser();
-  return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/votes/posts/${postId}`,
+  return fetch(`https://apiprogrammingdev.onrender.com/user/${selectedUser}/votes/posts/${postId}`,
             {method: 'GET',
             mode: 'cors', 
             headers: {
@@ -144,7 +144,7 @@ export async function votePost(postId,type) {
 
 export async function getLikePost(postId) {
     const { token, selectedUser } = getTokenAndUser();
-  return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/likes/posts/${postId}`,
+  return fetch(`https://apiprogrammingdev.onrender.com/user/${selectedUser}/likes/posts/${postId}`,
             {method: 'GET',
             mode: 'cors', 
             headers: {

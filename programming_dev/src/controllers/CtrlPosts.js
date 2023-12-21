@@ -2,7 +2,7 @@ import {getTokenAndUser} from "./CtrlUsers.js";
 
 export async function getVotesPost() {
     const { token, selectedUser } = getTokenAndUser();
-    return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/votes/posts`,
+    return fetch(`https://apiprogrammingdev.onrender.com/user/${selectedUser}/votes/posts`,
               {method: 'GET',
               mode: 'cors', 
               headers: {

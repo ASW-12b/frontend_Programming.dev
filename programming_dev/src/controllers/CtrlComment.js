@@ -65,7 +65,7 @@ export async function replyComment(commentId,content) {
 
 export async function getVotesComment() {
     const { token, selectedUser } = getTokenAndUser();
-  return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/votes/comments`,
+  return fetch(`https://apiprogrammingdev.onrender.com/user/${selectedUser}/votes/comments`,
             {method: 'GET',
             mode: 'cors', 
             headers: {
@@ -110,7 +110,7 @@ export async function voteComment(commentId,type) {
 
 export async function getLikesComment() {
     const { token, selectedUser } = getTokenAndUser();
-  return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/likes/comments`,
+  return fetch(`https://apiprogrammingdev.onrender.com/user/${selectedUser}/likes/comments`,
             {method: 'GET',
             mode: 'cors', 
             headers: {
