@@ -1,0 +1,30 @@
+.custom-margin {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+h1 {
+    font-size: 20px;
+    margin-top: 10px; /* Increase the margin above the dropdown menu */
+}
+.banner {
+    background-size: cover;
+    height: 200px;
+    text-align: center;
+    color: #fff;
+    padding: 40px;
+}
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.avatar img {
+    width: 100%;
+    height: auto;
+}
+.cb {
+    background-color: white;
+    border-color: black;
+    color: black;
+}
