@@ -6,4 +6,4 @@ Members: Núria Canals, Adrián Contreras, Daniel Fernández, Javier López
 
 Taiga: https://tree.taiga.io/project/codigodebarras11-asw-12b
 
-Deployment: ------------------------------------------------------------
+Deployment: https://programming-dev-five.vercel.app
