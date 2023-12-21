@@ -14,6 +14,8 @@ import { Dropdown } from 'react-bootstrap';
 import { CommentsPost } from './CommentsPost';
 import {getPost,editPost, deletePost, comment,getVotePost, votePost,getLikePost,likePost} from '../controllers/CtrlPost'
 import { getCommunities } from '../controllers/CtrlCommunities';
+import { getCommentsByPostId } from '../controllers/CtrlComments';
+import { getLikesComment, getVotesComment } from '../controllers/CtrlComment';
 
 
 
@@ -25,12 +27,24 @@ export function Post () {
     const [communities,setCommunities] = useState([])
     const [vote,setVote] = useState({})
     const [like, setLike] = useState(false); 
+    const [votes,setVotes] = useState([])
+    const [likes,setLikes] = useState([])
+    const [comments,setComments]  = useState([])
     const [formData, setFormData] = useState({
         url: '',
         title: '',
         description: '',
         comunitat: '',
     });
+
+    const refreshComments = async () => {
+      const updatedComments = await getCommentsByPostId(postId);
+      setComments(updatedComments);
+      const v = await getVotesComment()
+      const l = await getLikesComment()
+      setLikes(l)
+      setVotes(v)
+    }
 
     const [newComment,setNewComment] = useState('')
 
@@ -85,9 +99,6 @@ export function Post () {
         });
     }
 
-    function refreshComments() {
-      console.log("refrescar")
-    }
 
     const handleChange = (event) => {
       event.preventDefault()
@@ -129,6 +140,19 @@ export function Post () {
       }
       fetchLike()
     },[])
+
+    useEffect(() => {
+      const fetchComments = async () => {
+        const com = await getCommentsByPostId(postId);
+        const v = await getVotesComment()
+        const l = await getLikesComment()
+        setComments(com);
+        setLikes(l)
+        setVotes(v)
+      };
+  
+      fetchComments();
+    }, [postId]);
 
 
 
@@ -285,7 +309,7 @@ export function Post () {
                 <p>Cargando.....</p>
             )
         )}
-        <CommentsPost id={postId} refreshComments={refreshComments}/>
+        <CommentsPost id={postId} comments={comments} refreshComments={refreshComments} votes={votes} likes={likes}/>
         </>
 
         

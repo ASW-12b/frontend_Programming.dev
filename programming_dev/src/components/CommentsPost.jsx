@@ -5,25 +5,21 @@ import { faArrowDown, faReply } from '@fortawesome/free-solid-svg-icons'
 import { faStar } from '@fortawesome/free-regular-svg-icons'
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
-import {useState,useEffect} from 'react'
+import {useState} from 'react'
 import '../styles/layout.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { RecursiveComment } from './RecursiveComment'
-import { getCommentsByPostId } from '../controllers/CtrlComments'
 import { deleteComment, editComment, replyComment } from '../controllers/CtrlComment'
 import { Dropdown } from 'react-bootstrap';
-import { getVotesComment,voteComment,LikeComment,getLikesComment } from '../controllers/CtrlComment'
+import { voteComment,LikeComment } from '../controllers/CtrlComment'
 
-export function CommentsPost({id,refreshComments}) {
-  let postId = id
-  const [comments,setComments] = useState([])
+export function CommentsPost({comments,refreshComments,likes,votes}) {
+  //let postId = id
   const [deleted,setDeleted] = useState(false)
   const [EditedComment,setEditedComment] = useState(null)
   const [content, setContent] = useState('');
   const [replyModalId, setReplyModalId] = useState(null);
   const [reply,setReply] = useState('')
-  const [votes,setVotes] = useState({})
-  const [likes, setLikes] = useState({})
 
   function refreshSubcom() {
     console.log('refresh')
@@ -36,21 +32,12 @@ export function CommentsPost({id,refreshComments}) {
   const handleCloseReplyModal = () => {
     setReplyModalId(null); // Resetear el ID del comentario para ocultar el modal de respuesta
   };
-  useEffect(() => {
-      const fetchComments = async () => {
-          const com = await getCommentsByPostId(postId)
-          setComments(com)
-      }
-      fetchComments()
-      
-  },[deleted,EditedComment,refreshComments,refreshSubcom])
-
   
-
   function handleDelete(commentId) {
     deleteComment(commentId)
     .then(() => {
       setDeleted(!deleted);
+      refreshComments()
     })
     .catch((error) => {
       console.error('Error al eliminar el comentario:', error);
@@ -75,6 +62,7 @@ export function CommentsPost({id,refreshComments}) {
     console.log(content)
     editComment(EditedComment,content).then(() => {
       setEditedComment(null)
+      refreshComments()
     })
   }
 
@@ -84,6 +72,7 @@ export function CommentsPost({id,refreshComments}) {
       setReply('')
       setReplyModalId(null)
       refreshSubcom()
+      refreshComments()
     })
   }
 
@@ -95,34 +84,13 @@ export function CommentsPost({id,refreshComments}) {
 
   const handleClickVote = async (type,commentId) => {
     await voteComment(commentId,type)
-    const v = await getVotesComment();
-    setVotes(v);
+    refreshComments()
   }
-
-  useEffect(() => {
-    const fetchVotes = async () => {
-      const v = await getVotesComment()
-      console.log(v)
-      setVotes(v)
-    }
-    fetchVotes()
-  },[])
-
 
   const handleClickLike = async (commentId) => {
     await LikeComment(commentId)
-    const v = await getLikesComment();
-    setVotes(v);
+    refreshComments()
   }
-
-  useEffect(() => {
-    const fetchLikes = async () => {
-      const v = await getLikesComment()
-      console.log(v)
-      setVotes(v)
-    }
-    fetchLikes()
-  },[])
 
   
     return (
@@ -149,7 +117,7 @@ export function CommentsPost({id,refreshComments}) {
                         <p>{ c.content }</p>
                         <div className="row">
                             <div className="col-auto">
-                                    <FontAwesomeIcon onClick={() => {handleClickVote('positive',c.id)}} icon={faArrowUp} style={{color: (votes[c.id] && votes[c.id].type === 'positive') ? "#ff0000" : "inherit"}}/>
+                                    <FontAwesomeIcon onClick={() => {handleClickVote('positive',c.id)}} style={{color: (votes[c.id] && votes[c.id].type === 'positive') ? "#ff0000" : "inherit"}} icon={faArrowUp}/>
                             </div>
                             <div className="col-auto">
                                 <p className="mr-2">
@@ -157,7 +125,7 @@ export function CommentsPost({id,refreshComments}) {
                                 </p>
                             </div>
                             <div className="col-auto">
-                                    <FontAwesomeIcon onClick={() => {handleClickVote('negative',c.id)}} icon={faArrowDown} style={{color: (votes[c.id] && votes[c.id].type === 'negative') ? "#ff0000" : "inherit"}}/>
+                                    <FontAwesomeIcon onClick={() => {handleClickVote('negative',c.id)}} style={{color: (votes[c.id] && votes[c.id].type === 'negative') ? "#ff0000" : "inherit"}} icon={faArrowDown}/>
                             </div>
                             <div className="col-auto">
                                 <p className="mr-2">
@@ -165,7 +133,7 @@ export function CommentsPost({id,refreshComments}) {
                                 </p>
                             </div>
                             <div className="col-auto mr-2">
-                                    <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
+                                    <FontAwesomeIcon onClick={() => {handleClickLike(c.id)}}  style={{color: (likes[c.id]) ? "#ffff00" : "inherit"}} icon={faStar}/>
                             </div>
                             <div className="col-auto">
                                     <button type="button"  className="btn btn-light btn-sm" onClick={()=> {handleReply(c.id)}}>
@@ -186,7 +154,7 @@ export function CommentsPost({id,refreshComments}) {
                         </div>
                         {c.replies && c.replies.map(reply => (
                           <ul key={reply.id} className='list-group'>
-                            <RecursiveComment key={reply.id} comment={reply} />
+                            <RecursiveComment key={reply.id} comment={reply} votes={votes} likes={likes} refreshComments={refreshComments}/>
                           </ul>
                         ))}
                         <div className="modal-fade" id={`modal_${c.id}`} tabIndex="-1" style={{ display: replyModalId === c.id ? 'block' : 'none' }}>

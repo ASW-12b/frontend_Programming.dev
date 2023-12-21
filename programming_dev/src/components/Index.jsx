@@ -5,6 +5,10 @@ import { faArrowDown,faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { /*faTrashCan,faPenToSquare ,*/faStar,faComment} from '@fortawesome/free-regular-svg-icons'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown } from 'react-bootstrap';
+import { getVotesComment,getLikesComment } from '../controllers/CtrlComment';
+import { getVotesPost,getLikesPost } from '../controllers/CtrlPosts';
+import {likePost,votePost} from '../controllers/CtrlPost'
+
 
 export function Index() {
     const [info, setInfo] = useState([]);
@@ -12,6 +16,11 @@ export function Index() {
     const [selectedButton, setSelectedButton] = useState('Tot'); // Default value
     const [selectedButton2, setSelectedButton2] = useState('Publicacions'); // Default value
     const [messages, setMessages] = useState([]);
+    const [votesPosts,setVotesPosts] = useState([])
+    const [votesComments,setVotesComments] = useState([])
+    const [likesPosts,setLikesPosts] = useState([])
+    const [likesComments,setLikesComments] = useState([])
+
 
   function getInfo(order, button, button2) {
     let apiUrl;
@@ -40,6 +49,7 @@ export function Index() {
                 return [];
             } else {
                 setMessages([]);
+            refreshInfo()
             return data;
             }
         });
@@ -50,6 +60,7 @@ export function Index() {
         getInfo(selectedOrder, selectedButton, selectedButton2)
             .then(info => {
                 setInfo(info);
+                refreshInfo()
             })
         .catch(error => {
             console.error('Error fetching info:', error);
@@ -58,7 +69,19 @@ export function Index() {
     };
 
     fetchInfo();
+    refreshInfo()
   }, [selectedOrder, selectedButton, selectedButton2]);
+
+  const refreshInfo = async () => {
+    const vp = await getVotesPost()
+    const lp = await getLikesPost()
+    const vc = await getVotesComment()
+    const lc = await getLikesComment()
+    setVotesPosts(vp)
+    setLikesPosts(lp)
+    setVotesComments(vc)
+    setLikesComments(lc)
+  }
 
 
 
@@ -75,6 +98,16 @@ export function Index() {
   const handleButtonClick2 = (button) => {
     setSelectedButton2(button);
   };
+
+  const handleClickVotePost = async (postId,type) => {
+    await votePost(postId,type)
+    refreshInfo()
+  }
+
+  const handleClickLikePost = async (postId) => {
+    await likePost(postId)
+    refreshInfo()
+  }
 
   return (
     <div className='form-box'>
@@ -123,13 +156,13 @@ export function Index() {
                             </a>
                             <div className="row px-4">
                                 <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                        <a href={`/posts/${p.pk}`} className="link"><FontAwesomeIcon icon={faComment} /></a>
                                 </div>
                                 <div className="col-auto mr-2">
                                         <p>{p.fields.numComments}</p>
                                 </div>
                                 <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                        <FontAwesomeIcon onClick={() => {handleClickVotePost(p.pk,'positive')}} icon={faArrowUp} style={{color: (votesPosts[p.pk] && votesPosts[p.pk].type === 'positive') ? "#ff0000" : "inherit"}} icon={faArrowUp} />
                                 </div>
                                 <div className="col-auto">
                                     <p className="mr-2">
@@ -137,24 +170,11 @@ export function Index() {
                                     </p>
                                 </div>
                                 <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                        <FontAwesomeIcon onClick={() => {handleClickVotePost(p.pk,'negative')}} icon={faArrowUp} style={{color: (votesPosts[p.pk] && votesPosts[p.pk].type === 'negative') ? "#ff0000" : "inherit"}} icon={faArrowDown} />
                                 </div>
                                 <div className="col-auto mr-2">
-                                        <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                        <FontAwesomeIcon onClick={() => {handleClickLikePost(p.pk)}} style={{color: likesPosts[p.id] ? "#ffff00" : "inherit"}} icon={faStar} />
                                 </div>
-                                {/*
-                                <div className="dropdown col-auto">
-                                    <Dropdown>
-                                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                                            &#8942;
-                                        </Dropdown.Toggle>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item href={`/posts/${p.pk}`}><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                            <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </div>
-                    */}
                             </div>
                             <hr className="my-3"></hr>
                         </div>
