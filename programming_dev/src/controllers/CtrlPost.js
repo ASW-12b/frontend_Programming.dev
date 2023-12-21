@@ -1,9 +1,12 @@
+import {getTokenAndUser} from "./CtrlUsers.js";
+
 export async function getPost(postId) {
+    const { token, selectedUser } = getTokenAndUser();
     return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
+          'Authorization': token
         },
       })
       .then(response => response.json())
@@ -18,13 +21,14 @@ export async function getPost(postId) {
   }
 
 export async function editPost(formData,postId) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`,
             {method: 'PUT',
             mode: 'cors', 
             body: JSON.stringify(formData),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization': token
             }
             },)
             .then(response => response.json())
@@ -39,11 +43,12 @@ export async function editPost(formData,postId) {
 
 
 export async function deletePost(postId) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
+              'Authorization': token
             },
           })
           .then(response => response.json())
@@ -58,13 +63,14 @@ export async function deletePost(postId) {
 
 
 export async function createPost(formData) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch('https://apiprogrammingdev.onrender.com/posts',
             {method: 'POST',
             mode: 'cors', 
             body: JSON.stringify(formData),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization': token
             }
             },)
             .then(response => response.json())
@@ -77,13 +83,14 @@ export async function createPost(formData) {
 }
 
 export async function comment(content,postId) {
-  return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/comment`,
+    const { token, selectedUser } = getTokenAndUser();
+    return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/comment`,
             {method: 'POST',
             mode: 'cors', 
             body: JSON.stringify({'comentari': content}),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization':token
             }
             },)
             .then(response => response.json())
@@ -96,12 +103,13 @@ export async function comment(content,postId) {
 }
 
 export async function getVotePost(postId) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/votes/posts/${postId}`,
             {method: 'GET',
             mode: 'cors', 
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization': token
             }
             },)
             .then(response => response.json())
@@ -115,13 +123,14 @@ export async function getVotePost(postId) {
 }
 
 export async function votePost(postId,type) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/vote`,
             {method: 'POST',
             mode: 'cors', 
             body: JSON.stringify({'typeV': type}),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization': token
             }
             },)
             .then(response => response.json())
@@ -134,12 +143,13 @@ export async function votePost(postId,type) {
 }
 
 export async function getLikePost(postId) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/likes/posts/${postId}`,
             {method: 'GET',
             mode: 'cors', 
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization': token
             }
             },)
             .then(response => response.json())
@@ -153,12 +163,13 @@ export async function getLikePost(postId) {
 }
 
 export async function likePost(postId) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/like`,
             {method: 'POST',
             mode: 'cors', 
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization':token
             }
             },)
             .then(response => response.json())

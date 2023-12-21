@@ -1,7 +1,8 @@
+import { getTokenAndUser } from './CtrlUsers.js';
 export function createCommunity(id, name, avatar, banner) {
 
   const apiUrl = 'https://apiprogrammingdev.onrender.com/communities';
-
+  const { token, selectedUser } = getTokenAndUser();
   // Create a FormData object to send the multipart/form-data request
   const formData = new FormData();
   formData.append('id', id);
@@ -16,7 +17,7 @@ export function createCommunity(id, name, avatar, banner) {
     method: 'POST',
     headers: {
       'accept': 'application/json',
-      'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',
+      'Authorization': token,
       'X-CSRFToken': csrfToken,
     },
     body: formData,
@@ -40,6 +41,7 @@ export function createCommunity(id, name, avatar, banner) {
 
 export function updateSubscrits(community) {
     const communityId = community[0].pk;
+    const { token, selectedUser } = getTokenAndUser();
     let apiUrl = `https://apiprogrammingdev.onrender.com/communities/${communityId}/subscribe`;
     console.log('Fetching data from:', apiUrl);
 
@@ -48,7 +50,7 @@ export function updateSubscrits(community) {
         headers: {
             'Content-Type': 'application/json',
             'accept': 'application/json',  // Include 'accept' header
-            'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',  // Include 'Authorization' header
+            'Authorization': token,  // Include 'Authorization' header
         },
     })
         .then(response => response.json())
@@ -68,6 +70,7 @@ export function updateSubscrits(community) {
 
 export function deleteSubscrits(community) {
     const communityId = community[0].pk;
+    const { token, selectedUser } = getTokenAndUser();
     let apiUrl = `https://apiprogrammingdev.onrender.com/communities/${communityId}/unsubscribe`;
     console.log('Fetching data from:', apiUrl);
 
@@ -76,7 +79,7 @@ export function deleteSubscrits(community) {
         headers: {
             'Content-Type': 'application/json',
             'accept': 'application/json',  // Include 'accept' header
-            'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f',  // Include 'Authorization' header
+            'Authorization': token,  // Include 'Authorization' header
         },
     })
         .then(response => response.json())

@@ -1,9 +1,12 @@
+import {getTokenAndUser} from "./CtrlUsers.js";
+
 export async function deleteComment(commentId) {
+    const { token, selectedUser } = getTokenAndUser();
     return fetch(`https://apiprogrammingdev.onrender.com/comments/${commentId}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f'
+              'Authorization': token
             },
           })
           .then(response => response.json())
@@ -18,13 +21,14 @@ export async function deleteComment(commentId) {
 
 
 export async function editComment(commentId,content) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/comments/${commentId}`, {
             method: 'PUT',
             mode: 'cors', 
             body: JSON.stringify({'contingut': content}),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization': token
             }
           })
           .then(response => response.json())
@@ -39,13 +43,14 @@ export async function editComment(commentId,content) {
 
 
 export async function replyComment(commentId,content) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/comments/${commentId}/reply`, {
             method: 'POST',
             mode: 'cors', 
             body: JSON.stringify({'contingut': content}),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization':token
             }
           })
           .then(response => response.json())
@@ -59,12 +64,13 @@ export async function replyComment(commentId,content) {
 }
 
 export async function getVotesComment() {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/votes/comments`,
             {method: 'GET',
             mode: 'cors', 
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization':token
             }
             },)
             .then(response => response.json())
@@ -83,13 +89,14 @@ export async function getVotesComment() {
 }
 
 export async function voteComment(commentId,type) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/comments/${commentId}/vote`,
             {method: 'POST',
             mode: 'cors', 
             body: JSON.stringify({'typeV': type}),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization': token
             }
             },)
             .then(response => response.json())
@@ -102,12 +109,13 @@ export async function voteComment(commentId,type) {
 }
 
 export async function getLikesComment() {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/likes/comments`,
             {method: 'GET',
             mode: 'cors', 
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization':token
             }
             },)
             .then(response => response.json())
@@ -126,13 +134,14 @@ export async function getLikesComment() {
 }
 
 export async function LikeComment(commentId,type) {
+    const { token, selectedUser } = getTokenAndUser();
   return fetch(`https://apiprogrammingdev.onrender.com/comments/${commentId}/like`,
             {method: 'POST',
             mode: 'cors', 
             body: JSON.stringify({'typeV': type}),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                'Authorization': token
             }
             },)
             .then(response => response.json())

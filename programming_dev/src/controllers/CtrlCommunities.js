@@ -1,13 +1,16 @@
+import {getTokenAndUser} from "./CtrlUsers.js";
+
 export function getCommunities(filtre) {
 
+    const { token, selectedUser } = getTokenAndUser();
     let url = `https://apiprogrammingdev.onrender.com/communities?Filtre=${filtre}`;
     console.log('Fetching data from:', url);
-
+    console.log('3324', token);
     return fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': '3ed9e367-519d-4435-8b35-c15d829e528f'
+            'Authorization': token
         },
     })
         .then(response => response.json())

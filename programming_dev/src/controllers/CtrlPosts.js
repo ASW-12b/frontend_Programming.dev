@@ -1,10 +1,13 @@
+import {getTokenAndUser} from "./CtrlUsers.js";
+
 export async function getVotesPost() {
+    const { token, selectedUser } = getTokenAndUser();
     return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/votes/posts`,
               {method: 'GET',
               mode: 'cors', 
               headers: {
                   'Content-Type': 'application/json',
-                  'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                  'Authorization': token
               }
               },)
               .then(response => response.json())
@@ -24,12 +27,13 @@ export async function getVotesPost() {
   }
 
   export async function getLikesPost() {
+    const { token, selectedUser } = getTokenAndUser();
     return fetch(`https://apiprogrammingdev.onrender.com/user/adrian.contreras.martin/likes/posts`,
               {method: 'GET',
               mode: 'cors', 
               headers: {
                   'Content-Type': 'application/json',
-                  'Authorization':'3ed9e367-519d-4435-8b35-c15d829e528f'
+                  'Authorization':token
               }
               },)
               .then(response => response.json())

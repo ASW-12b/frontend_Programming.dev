@@ -1,4 +1,5 @@
 export async function getCommentsByPostId(postId) {
+
     return fetch(`https://apiprogrammingdev.onrender.com/posts/${postId}/comments`, {
             method: 'GET',
             headers: {

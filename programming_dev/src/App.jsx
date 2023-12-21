@@ -15,7 +15,7 @@ import { Dropdown } from 'react-bootstrap';
 
 
 function App() {
-
+     const [selectedUser, setSelectedUser] = useState(localStorage.getItem('selectedUser') || 'Usuaris');
      const setTokenAndUser = (token, user) => {
         localStorage.setItem('token', token);
         localStorage.setItem('selectedUser', user);
@@ -44,18 +44,20 @@ function App() {
                     </a>
                     <div className="nav-item dropdown">
                         <Dropdown>
-                            <Dropdown.Toggle href="#"
-                                             id="userDropdown" style={{marginRight: '10px'}}>
+                            <Dropdown.Toggle href="#" id="userDropdown" style={{marginRight: '10px'}}>
                                 Usuaris
                             </Dropdown.Toggle>
                             {/* Dropdown Menu */}
                             <Dropdown.Menu aria-labelledby="userDropdown">
-                                <Dropdown.Item
-                                    style={{backgroundColor: localStorage.getItem('selectedUser') === 'adrian.contreras.martin_v2' ? '#c4c4c4' : 'transparent'}}
-                                    onClick={() => handleUserSelection('adrian.contreras.martin_v2')}>adrian.contreras.martin_v2</Dropdown.Item>
-                                <Dropdown.Item
-                                    style={{backgroundColor: localStorage.getItem('selectedUser') === 'adrian.contreras.martin' ? '#c4c4c4' : 'transparent'}}
-                                    onClick={() => handleUserSelection('adrian.contreras.martin')}>adrian.contreras.martin</Dropdown.Item>
+                                {['adrian.contreras.martin_v2', 'adrian.contreras.martin'].map((user, index) => (
+                                    <Dropdown.Item
+                                        key={index}
+                                        style={{backgroundColor: localStorage.getItem('selectedUser') === user ? '#c4c4c4' : 'transparent'}}
+                                        onClick={() => handleUserSelection(user)}
+                                    >
+                                        {user}
+                                    </Dropdown.Item>
+                                ))}
                                 {localStorage.getItem('selectedUser') && (
                                     <Dropdown.Item href={`/user/${localStorage.getItem('selectedUser')}`}>
                                         El meu perfil
@@ -64,13 +66,14 @@ function App() {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
+
                 </div>
             </nav>
       </div>
         <Switch>
             <Route path="/createPost" component={CreatePost}/>
             <Route path="/posts/:postId" component={Post}/>
-            <Route path="/communities/:communityId" component={Community} />
+            <Route path="/communities/:communityId" component={Community}/>
             <Route path="/user/:username" component={Perfil}/>
             <Route path="/search" component={Search}/>
             <Route exact path="/posts" component={Index}/>
