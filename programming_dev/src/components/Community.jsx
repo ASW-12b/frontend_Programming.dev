@@ -16,6 +16,8 @@ export function Community () {
     const [comPosts, setComPosts] = useState([]);
     const [comComments, setComComments] = useState([]);
     const [selectedButton, setSelectedButton] = useState('Publicacions'); // Default value
+    const [selectedOrder, setSelectedOrder] = useState('Nou'); // Default value
+
 
     const getTokenAndUser = () => {
         const token = localStorage.getItem('token');
@@ -59,6 +61,10 @@ export function Community () {
         setSelectedButton(button);
     };
 
+    const handleOrderChange = (eventKey) => {
+        setSelectedOrder(eventKey);
+    };
+
     function getCommentsPosts(filter, order) {
         let apiUrl;
 
@@ -68,7 +74,7 @@ export function Community () {
             apiUrl = `https://apiprogrammingdev.onrender.com/communities/${communityId}/comments`;
         }
 
-        const url = `${apiUrl}?Filtre=${filter}`;
+        const url = `${apiUrl}?Filtre=${filter}&Tipus_Ordenacio=${order}`;
 
         return fetch(url, {
             method: 'GET',
@@ -90,7 +96,7 @@ export function Community () {
     useEffect(() => {
         const fetchCommunityPC = async () => {
             try {
-                const comData2 = await getCommentsPosts(selectedButton);
+                const comData2 = await getCommentsPosts(selectedButton,selectedOrder);
                 if (comData2) {
                     if (selectedButton === 'Comentaris') {
                         setComComments(comData2 || []);
@@ -106,7 +112,7 @@ export function Community () {
             }
         };
         fetchCommunityPC();
-    }, [selectedButton]);
+    }, [selectedButton, selectedOrder]);
 
     return (
         <>
@@ -127,7 +133,22 @@ export function Community () {
                         </div>
                     </div>
 
-                    <div className="btn-group rareButton custom-margin" role="group" aria-label="Basic example">
+                    <div className="btn-group custom-margin" role="group" aria-label="Basic example">
+                        {/* Dropdown menu */}
+                        <Dropdown onSelect={handleOrderChange} className="mb-3">
+                            <Dropdown.Toggle variant="light" id="order-dropdown">
+                                {selectedOrder}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item eventKey="Nou">Nou</Dropdown.Item>
+                                <Dropdown.Item eventKey="Antic">Antic</Dropdown.Item>
+                                <Dropdown.Item eventKey="Mes Comentaris">Més Comentaris</Dropdown.Item>
+                                <Dropdown.Item eventKey="Mes popular">Més Popular</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+
+                    <div className="btn-group rareButton" role="group" aria-label="Basic example">
                         <button className={`btn btn-secondary ${selectedButton === 'Publicacions' ? 'selected' : ''}`}
                                 onClick={() => handleButtonClick('Publicacions')}>Publicacions
                         </button>
@@ -140,28 +161,28 @@ export function Community () {
                         comPosts.length > 0 ? (
                             comPosts.map(p => (
                                 <div key={p.pk} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                                    <a style={{color:'black',textDecoration:'none'}} href={`/posts/${p.pk}`}>
+                                    <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${p.pk}`}>
                                         <h4><b>{p.fields.title}</b></h4>
                                     </a>
                                     <div className="row px-4">
                                         <div className="col-auto mr-2">
-                                            <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                            <a href="" className="link"><FontAwesomeIcon icon={faComment}/></a>
                                         </div>
                                         <div className="col-auto mr-2">
                                             <p>{p.fields.numComments}</p>
                                         </div>
                                         <div className="col-auto mr-2">
-                                            <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                            <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
                                         </div>
                                         <div className="col-auto">
                                             <p className="mr-2">
                                             </p>
                                         </div>
                                         <div className="col-auto mr-2">
-                                            <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                            <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
                                         </div>
                                         <div className="col-auto mr-2">
-                                            <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                            <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
                                         </div>
                                         {selectedUser === p.fields.poster && (
                                             <div className="dropdown col-auto">
@@ -170,8 +191,8 @@ export function Community () {
                                                         &#8942;
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare}/>Editar</Dropdown.Item>
+                                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan}/>Eliminar</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
@@ -190,25 +211,25 @@ export function Community () {
                         comComments.length > 0 ? (
                             comComments.map(c => (
                                 <div key={c.id} className="col-12 col-lg-6 offset-lg-3 mb-4">
-                                    <a style={{color:'black',textDecoration:'none'}} href={`/posts/${c.id}`}>
+                                    <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${c.id}`}>
                                         <h4><b>{c.content}</b></h4>
                                     </a>
                                     <div className="row px-4">
                                         <div className="col-auto mr-2">
-                                            <a href="" className="link"><FontAwesomeIcon icon={faComment} /></a>
+                                            <a href="" className="link"><FontAwesomeIcon icon={faComment}/></a>
                                         </div>
                                         <div className="col-auto mr-2">
-                                            <a href="" className="link"><FontAwesomeIcon icon={faArrowUp} /></a>
+                                            <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
                                         </div>
                                         <div className="col-auto">
                                             <p className="mr-2">
                                             </p>
                                         </div>
                                         <div className="col-auto mr-2">
-                                            <a href="" className="link"><FontAwesomeIcon icon={faArrowDown} /></a>
+                                            <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
                                         </div>
                                         <div className="col-auto mr-2">
-                                            <a href="" className="link"><FontAwesomeIcon icon={faStar} /></a>
+                                            <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
                                         </div>
                                         {selectedUser === c.commentor && (
                                             <div className="dropdown col-auto">
@@ -217,8 +238,8 @@ export function Community () {
                                                         &#8942;
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare} />Editar</Dropdown.Item>
-                                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan} />Eliminar</Dropdown.Item>
+                                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faPenToSquare}/>Editar</Dropdown.Item>
+                                                        <Dropdown.Item href=""><FontAwesomeIcon icon={faTrashCan}/>Eliminar</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
@@ -228,15 +249,15 @@ export function Community () {
                                 </div>
                             ))
                         ) : (
-                                <div className="custom-margin">
-                                    <p>No hi ha comentaris</p>
-                                </div>
-                            )
-                        ) : null}
+                            <div className="custom-margin">
+                                <p>No hi ha comentaris</p>
+                            </div>
+                        )
+                    ) : null}
                 </div>
-                ) : (
-                    <p>Carregant...</p>
-                )}
+            ) : (
+                <p>Carregant...</p>
+            )}
         </>
     );
 }
