@@ -252,7 +252,7 @@ export function Communities () {
                     <tbody>
                     {info.map((community, index) => (
                         <tr key={index}>
-                            <td>{community[0].fields.name}</td>
+                            <td><a href={`/communities/${community[0].pk}`}>{community[0].fields.name}</a></td>
                             <td>{community[0].fields.subs}</td>
                             <td>{community[0].fields.publicacions}</td>
                             <td>{community[0].fields.comentaris}</td>
