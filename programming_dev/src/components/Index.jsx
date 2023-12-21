@@ -6,6 +6,10 @@ import { /*faTrashCan,faPenToSquare ,*/faStar,faComment} from '@fortawesome/free
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown } from 'react-bootstrap';
 import {getInfo} from '../controllers/CtrlIndex'
+import { getVotesComment,getLikesComment } from '../controllers/CtrlComment';
+import { getVotesPost,getLikesPost } from '../controllers/CtrlPosts';
+import {likePost,votePost} from '../controllers/CtrlPost'
+
 
 export function Index() {
     const [info, setInfo] = useState([]);
@@ -13,6 +17,21 @@ export function Index() {
     const [selectedButton, setSelectedButton] = useState('Tot');
     const [selectedButton2, setSelectedButton2] = useState('Publicacions');
     const [messages, setMessages] = useState([]);
+    const [votesPosts,setVotesPosts] = useState([])
+    const [votesComments,setVotesComments] = useState([])
+    const [likesPosts,setLikesPosts] = useState([])
+    const [likesComments,setLikesComments] = useState([])
+
+    const refreshInfo = async () => {
+        const vp = await getVotesPost()
+        const lp = await getLikesPost()
+        const vc = await getVotesComment()
+        const lc = await getLikesComment()
+        setVotesPosts(vp)
+        setLikesPosts(lp)
+        setVotesComments(vc)
+        setLikesComments(lc)
+      }
 
 
     useEffect(() => {
@@ -32,7 +51,7 @@ export function Index() {
     };
 
     fetchInfo();
-}, [selectedOrder, selectedButton, selectedButton2]);
+}, [selectedOrder, selectedButton, selectedButton2,votesPosts,likesPosts]);
 
 
 
@@ -49,6 +68,21 @@ export function Index() {
   const handleButtonClick2 = (button) => {
     setSelectedButton2(button);
   };
+
+
+  const handleClickVotePost = async (postId,type) => {
+    await votePost(postId,type)
+    refreshInfo()
+    getInfo(selectedOrder, selectedButton, selectedButton2)
+
+  }
+
+  const handleClickLikePost = async (postId) => {
+    await likePost(postId)
+    const lp = await getLikesPost(); // Obtener los likes actualizados
+    setLikesPosts(lp);
+    getInfo(selectedOrder, selectedButton, selectedButton2)
+  }
 
   const renderMessage = (message, index) => (
     <div key={index} className="alert alert-danger" role="alert">
@@ -88,31 +122,41 @@ export function Index() {
 
    const renderPost = (p, index) => (
        <div key={index} className="col-12 col-lg-6 offset-lg-3 mb-4 filtre">
-               <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${p.pk}`}>
-                   <h4><b>{p.fields && p.fields.title}</b></h4>
-               </a>
-               <div className="row px-4">
-                   <div className="col-auto mr-2">
-                       <a href="" className="link"><FontAwesomeIcon icon={faComment}/></a>
-                   </div>
-                   <div className="col-auto mr-2">
-                       <p>{p.fields && p.fields.numComments}</p>
-                   </div>
-                   <div className="col-auto mr-2">
-                       <a href="" className="link"><FontAwesomeIcon icon={faArrowUp}/></a>
-                   </div>
-                   <div className="col-auto">
-                       <p className="mr-2">
-                           {p.fields && p.fields.totalVotes}
-                       </p>
-                   </div>
-                   <div className="col-auto mr-2">
-                       <a href="" className="link"><FontAwesomeIcon icon={faArrowDown}/></a>
-                   </div>
-                   <div className="col-auto mr-2">
-                       <a href="" className="link"><FontAwesomeIcon icon={faStar}/></a>
-                   </div>
-                   {/*
+           <a style={{color: 'black', textDecoration: 'none'}} href={`/posts/${p.pk}`}>
+               <h4><b>{p.fields && p.fields.title}</b></h4>
+           </a>
+           <div className="row px-4">
+               <div className="col-auto mr-2">
+                   <a href={`/posts/${p.pk}`} className="link"><FontAwesomeIcon icon={faComment}/></a>
+               </div>
+               <div className="col-auto mr-2">
+                   <p>{p.fields && p.fields.numComments}</p>
+               </div>
+               <div className="col-auto mr-2">
+                   <FontAwesomeIcon onClick={() => {
+                       handleClickVotePost(p.pk, 'positive')
+                   }}
+                                    style={{color: (votesPosts[p.pk] && votesPosts[p.pk].type === 'positive') ? "#ff0000" : "inherit"}}
+                                    icon={faArrowUp}/>
+               </div>
+               <div className="col-auto">
+                   <p className="mr-2">
+                       {p.fields && p.fields.totalVotes}
+                   </p>
+               </div>
+               <div className="col-auto mr-2">
+                   <FontAwesomeIcon onClick={() => {
+                       handleClickVotePost(p.pk, 'negative')
+                   }}
+                                    style={{color: (votesPosts[p.pk] && votesPosts[p.pk].type === 'negative') ? "#ff0000" : "inherit"}}
+                                    icon={faArrowDown}/>
+               </div>
+               <div className="col-auto mr-2">
+                   <FontAwesomeIcon onClick={() => {
+                       handleClickLikePost(p.pk)
+                   }} style={{color: likesPosts[p.pk] ? "#ffff00" : "inherit"}} icon={faStar}/>
+               </div>
+               {/*
                                 <div className="dropdown col-auto">
                                     <Dropdown>
                                         <Dropdown.Toggle variant="light" id="dropdown-basic">
@@ -125,8 +169,8 @@ export function Index() {
                                     </Dropdown>
                                 </div>
                     */}
-               </div>
-               <hr className="my-3"></hr>
+           </div>
+           <hr className="my-3"></hr>
        </div>
    );
 
@@ -147,12 +191,23 @@ export function Index() {
                     </Dropdown>
                 </div>
                 <div className="filtre btn-group" role="group">
-                    <button className={`btn btn-secondary rareButton ${selectedButton === 'Subscrit' ? 'selected' : ''}`} onClick={() => handleButtonClick('Subscrit')}>Subscrit</button>
-                    <button className={`btn btn-secondary rareButton ${selectedButton === 'Tot' ? 'selected' : ''}`} onClick={() => handleButtonClick('Tot')}>Tot</button>
+                    <button
+                        className={`btn btn-secondary rareButton ${selectedButton === 'Subscrit' ? 'selected' : ''}`}
+                        onClick={() => handleButtonClick('Subscrit')}>Subscrit
+                    </button>
+                    <button className={`btn btn-secondary rareButton ${selectedButton === 'Tot' ? 'selected' : ''}`}
+                            onClick={() => handleButtonClick('Tot')}>Tot
+                    </button>
                 </div>
                 <div className="filtre btn-group" role="group">
-                    <button className={`btn btn-secondary rareButton ${selectedButton2 === 'Publicacions' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Publicacions')}>Publicacions</button>
-                    <button className={`btn btn-secondary rareButton ${selectedButton2 === 'Comentaris' ? 'selected' : ''}`} onClick={() => handleButtonClick2('Comentaris')}>Comentaris</button>
+                    <button
+                        className={`btn btn-secondary rareButton ${selectedButton2 === 'Publicacions' ? 'selected' : ''}`}
+                        onClick={() => handleButtonClick2('Publicacions')}>Publicacions
+                    </button>
+                    <button
+                        className={`btn btn-secondary rareButton ${selectedButton2 === 'Comentaris' ? 'selected' : ''}`}
+                        onClick={() => handleButtonClick2('Comentaris')}>Comentaris
+                    </button>
                 </div>
             </div>
 
